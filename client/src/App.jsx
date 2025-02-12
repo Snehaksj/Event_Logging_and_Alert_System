@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-      <>Vite</>
+      <h1>React!</h1>
     </>
   )
 }
