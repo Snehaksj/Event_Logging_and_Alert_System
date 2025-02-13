@@ -10,15 +10,15 @@ const Dashboard = () => {
   return (
     <div className="h-screen">
       <Nav />
-      <div className="flex p-4 gap-2 ">
+      <div className="flex p-4 gap-4">
         {/* Left part */}
-        <div className="left flex flex-col w-3/4 border h-full">
+        <div className="left flex flex-col w-3/4 border h-full p-2">
           <Event />
           <TrafficGraph />
         </div>
 
         {/* Right part */}
-        <div className="right flex w-1/4 border flex-col">
+        <div className="right flex w-1/4 border flex-col gap-4 p-2">
           <Alarm />
           <PacketLoss />
           <Latency />
