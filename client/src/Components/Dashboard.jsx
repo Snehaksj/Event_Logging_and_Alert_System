@@ -8,9 +8,9 @@ import Nav from "./Nav";
 
 const Dashboard = () => {
   return (
-    <div className="h-screen">
+    <div className="h-screen overflow-hidden">
       <Nav />
-      <div className="flex p-4 gap-2 ">
+      <div className="flex p-4 gap-2 h-full">
         {/* Left part */}
         <div className="left flex flex-col w-3/4 border h-full">
           <Event />
