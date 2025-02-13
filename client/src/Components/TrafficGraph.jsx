@@ -8,51 +8,85 @@ import {
   PointElement,
   Title,
   Legend,
+  Tooltip,
+  Filler,
 } from "chart.js";
+
 Chart.register(
   LineElement,
   CategoryScale,
   LinearScale,
   PointElement,
   Title,
-  Legend
+  Legend,
+  Tooltip,
+  Filler
 );
 
 const TrafficGraph = () => {
   return (
-    <>
-      <div className="bottom flex justify-center items-center w-full">
-        <div className="w-5/6">
-          <Line
-            data={{
-              labels: ["A", "B", "C", "D", "E"],
-              datasets: [
-                {
-                  label: "Latency",
-                  data: [100, 300, 200, 300, 250],
-                  backgroundColor: "#064FF0",
-                  borderColor: "#064FF0",
-                },
-              ],
-            }}
-            options={{
-              plugins: {
-                title: {
-                  display: true,
-                  text: "TRAFFIC",
-                  font: { size: 16 },
-                  color: "#000",
-                },
-                legend: {
-                  display: true,
-                  position: "top",
+    <div className="bottom flex justify-center items-center w-full bg-[#0A192F] p-6 rounded-xl shadow-lg">
+      <div className="w-5/6">
+        <Line
+          data={{
+            labels: ["A", "B", "C", "D", "E", "F", "G"],
+            datasets: [
+              {
+                label: "Latency",
+                data: [100, 300, 200, 300, 250, 400, 350],
+                backgroundColor: "rgba(6, 79, 240, 0.3)",
+                borderColor: "#064FF0",
+                borderWidth: 2,
+                pointBackgroundColor: "#FFFFFF",
+                pointBorderColor: "#064FF0",
+                pointHoverRadius: 7,
+                pointRadius: 5,
+                tension: 0.4,
+                fill: true,
+              },
+            ],
+          }}
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                text: "Network Traffic Analysis",
+                font: { size: 20 },
+                color: "#FFFFFF",
+              },
+              legend: {
+                display: true,
+                position: "top",
+                labels: {
+                  color: "#FFFFFF",
                 },
               },
-            }}
-          />
-        </div>
+              tooltip: {
+                enabled: true,
+                backgroundColor: "#222",
+                titleColor: "#FFF",
+                bodyColor: "#FFF",
+                borderColor: "#064FF0",
+                borderWidth: 1,
+              },
+            },
+            scales: {
+              x: {
+                grid: { color: "rgba(255, 255, 255, 0.2)" },
+                ticks: { color: "#FFFFFF" },
+              },
+              y: {
+                grid: { color: "rgba(255, 255, 255, 0.2)" },
+                ticks: { color: "#FFFFFF" },
+                beginAtZero: true,
+              },
+            },
+          }}
+        />
       </div>
-    </>
+    </div>
   );
 };
 
