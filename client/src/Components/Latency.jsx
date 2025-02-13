@@ -8,12 +8,13 @@ import {
   Title,
   Legend,
 } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
-Chart.register(RadialLinearScale, PointElement, LineElement, Title, Legend);
+Chart.register(RadialLinearScale, PointElement, LineElement, Title, Legend, ChartDataLabels);
 
 const Latency = () => {
   return (
-    <div className="bottom flex justify-center items-center w-full bg-black p-4">
+    <div className="bottom flex justify-center items-center w-full bg-[#0A192F] p-4 rounded-xl shadow-lg">
       <div className="w-5/6">
         <Radar
           data={{
@@ -22,11 +23,11 @@ const Latency = () => {
               {
                 label: "Latency",
                 data: [100, 300, 200, 300, 250],
-                backgroundColor: "rgba(0, 191, 255, 0.7)",
-                borderColor: "#00BFFF",
+                backgroundColor: "rgba(6, 79, 240, 0.3)",
+                borderColor: "#064FF0",
                 borderWidth: 3,
-                pointBackgroundColor: "#00BFFF",
-                pointBorderColor: "#00BFFF",
+                pointBackgroundColor: "#FFFFFF",
+                pointBorderColor: "#064FF0",
                 pointRadius: 5,
               },
             ],
@@ -43,8 +44,17 @@ const Latency = () => {
                 display: false,
                 position: "top",
                 labels: {
-                  color: "#FFF",
+                  color: "rgba(252, 250, 250, 0.74)",
                 },
+              },
+              datalabels: {
+                color: "rgba(252, 250, 250, 0.74)",
+                font: {
+                  weight: "bold",
+                },
+                formatter: (value) => value,
+                anchor: "end",
+                align: "top",
               },
             },
             scales: {

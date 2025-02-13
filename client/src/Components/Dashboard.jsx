@@ -29,6 +29,7 @@ const Dashboard = () => {
 
           <Alarm />
           <PacketLoss />
+          <br></br>
           <Latency />
         </div>
       </div>
