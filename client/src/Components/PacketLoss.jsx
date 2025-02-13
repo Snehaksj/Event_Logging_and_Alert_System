@@ -39,7 +39,7 @@ const PacketLossBarChart = () => {
             plugins: {
               title: {
                 display: true,
-                text: "PACKET LOSS BAR CHART",
+                text: "PACKET LOSS",
                 font: { size: 18 },
                 color: "#FFF",
               },
