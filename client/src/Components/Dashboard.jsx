@@ -12,7 +12,7 @@ const Dashboard = () => {
       <Nav />
       <div className="flex p-4 gap-2 ">
         {/* Left part */}
-        <div className="left flex flex-col w-3/4 border">
+        <div className="left flex flex-col w-3/4 border h-full">
           <Event />
           <TrafficGraph />
         </div>
