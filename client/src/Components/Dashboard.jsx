@@ -8,9 +8,13 @@ import Nav from "./Nav";
 
 const Dashboard = () => {
   return (
-    <div className="h-screen">
+    <div className="h-screen flex flex-col">
       <Nav />
-      <div className="flex p-4 gap-4">
+
+      
+
+      <div className="flex flex-grow p-4 gap-2">
+
         {/* Left part */}
         <div className="left flex flex-col w-3/4 border h-full p-2">
           <Event />
@@ -18,7 +22,11 @@ const Dashboard = () => {
         </div>
 
         {/* Right part */}
-        <div className="right flex w-1/4 border flex-col gap-4 p-2">
+
+      
+
+        <div className="right flex w-1/4 border flex-col h-full">
+
           <Alarm />
           <PacketLoss />
           <Latency />
