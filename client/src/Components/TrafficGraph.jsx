@@ -25,8 +25,8 @@ Chart.register(
 
 const TrafficGraph = () => {
   return (
-    <div className="bottom flex justify-center items-center w-full bg-[#0A192F] p-6 rounded-xl shadow-lg">
-      <div className="w-5/6">
+    <div className="bottom flex justify-center items-center p-4 h-[400px] w-full">
+      <div className="w-full h-full  bg-[#0A192F] p-4 rounded-xl shadow-lg ">
         <Line
           data={{
             labels: ["A", "B", "C", "D", "E", "F", "G"],
@@ -41,7 +41,7 @@ const TrafficGraph = () => {
                 pointBorderColor: "#064FF0",
                 pointHoverRadius: 7,
                 pointRadius: 5,
-                tension: 0.4,
+                tension: 0.45,
                 fill: true,
               },
             ],
