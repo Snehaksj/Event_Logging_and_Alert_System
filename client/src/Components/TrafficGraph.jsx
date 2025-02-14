@@ -25,8 +25,8 @@ Chart.register(
 
 const TrafficGraph = () => {
   return (
-    <div className="bottom flex justify-center items-center p-4 h-[400px] w-full">
-      <div className="w-full h-full  bg-[#0A192F] p-4 rounded-xl shadow-lg ">
+    <div className="bottom flex justify-center items-center h-[450px] w-full">
+      <div className="w-full h-full  bg-[#0A192F] p-3 rounded-xl shadow-lg ">
         <Line
           data={{
             labels: ["A", "B", "C", "D", "E", "F", "G"],

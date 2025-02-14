@@ -39,7 +39,7 @@ export default function Alarm() {
 
   return (
     <>
-      <h4 className="p-1 text-lg text-gray-500">Critical Alarm Logs</h4>
+      <h4 className="p-1 text-lg text-gray-400">Critical Alarm Logs</h4>
       <div
         className="flex flex-col w-full max-h-[400px] mx-auto p-3 rounded-lg"
         style={{

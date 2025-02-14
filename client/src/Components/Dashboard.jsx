@@ -18,7 +18,7 @@ const Dashboard = () => {
       <div className="flex flex-grow p-3 gap-2">
 
         {/* Left part */}
-        <div className="left flex flex-col w-3/4 border gap-2  h-full p-2">
+        <div className="left flex flex-col w-3/4  gap-3  h-full p-2">
 
           <Event />
           <TrafficGraph />
@@ -26,12 +26,11 @@ const Dashboard = () => {
 
         {/* Right part */}
 
-        <div className="right flex w-1/4 flex-col">
+        <div className="right flex w-1/4 flex-col gap-3">
 
 
           <Alarm />
           <PacketLoss />
-          <br></br>
           <Latency />
         </div>
       </div>
