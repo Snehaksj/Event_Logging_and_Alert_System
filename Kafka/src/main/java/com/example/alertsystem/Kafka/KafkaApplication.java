@@ -1,13 +1,13 @@
-package sas.nms_backend;
+package com.example.alertsystem.Kafka;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NmsBackendApplication {
+public class KafkaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(NmsBackendApplication.class, args);
+		SpringApplication.run(KafkaApplication.class, args);
 	}
 
 }

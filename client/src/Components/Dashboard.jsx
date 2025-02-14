@@ -17,6 +17,7 @@ const Dashboard = () => {
 
       <div className="flex flex-grow p-3 gap-2">
 
+
         {/* Left part */}
         <div className="left flex flex-col w-3/4  gap-3  h-full p-2">
 
