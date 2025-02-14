@@ -25,14 +25,14 @@ Chart.register(
 
 const TrafficGraph = () => {
   return (
-    <div className="bottom flex justify-center items-center p-4 h-[400px] w-full">
-      <div className="w-full h-full  bg-[#0A192F] p-4 rounded-xl shadow-lg ">
+    <div className="bottom flex justify-center items-center h-[450px] w-full">
+      <div className="w-full h-full  bg-[#0A192F] p-3 rounded-xl shadow-lg ">
         <Line
           data={{
             labels: ["A", "B", "C", "D", "E", "F", "G"],
             datasets: [
               {
-                label: "Latency",
+                label: "Traffic",
                 data: [100, 300, 200, 300, 250, 400, 350],
                 backgroundColor: "rgba(6, 79, 240, 0.3)",
                 borderColor: "#064FF0",

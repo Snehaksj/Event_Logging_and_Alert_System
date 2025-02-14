@@ -1,0 +1,11 @@
+eventId,timestamp,deviceId,eventType,severity,message,metadata
+evt-001,2025-02-12T14:00:00Z,dev-101,DEVICE_ONLINE,INFO,"Device came online.","{""ip"": ""192.168.1.101"", ""location"": ""Server Room A""}"
+evt-002,2025-02-12T14:05:00Z,dev-102,FAILED_LOGIN,WARN,"Failed login attempt detected.","{""username"": ""admin"", ""ip"": ""192.168.1.102""}"
+evt-003,2025-02-12T14:07:30Z,dev-103,TRAFFIC_SPIKE,CRITICAL,"Unusual traffic spike detected.","{""bandwidth"": ""950 Mbps"", ""threshold"": ""500 Mbps""}"
+evt-004,2025-02-12T14:10:00Z,dev-104,DEVICE_OFFLINE,ERROR,"Device went offline unexpectedly.","{""ip"": ""192.168.1.104"", ""last_online"": ""2025-02-12T14:09:50Z""}"
+evt-005,2025-02-12T14:12:00Z,dev-105,SECURITY_BREACH,CRITICAL,"Potential security breach detected.","{""ip"": ""192.168.1.105"", ""details"": ""Multiple unauthorized access attempts""}"
+evt-006,2025-02-12T14:15:00Z,dev-106,SUCCESSFUL_LOGIN,INFO,"User login successful.","{""username"": ""jdoe"", ""ip"": ""192.168.1.106""}"
+evt-007,2025-02-12T14:20:00Z,dev-101,FAILED_LOGIN,WARN,"Failed login attempt detected.","{""username"": ""jdoe"", ""ip"": ""192.168.1.101""}"
+evt-008,2025-02-12T14:22:00Z,dev-102,DEVICE_ONLINE,INFO,"Device came online.","{""ip"": ""192.168.1.102"", ""location"": ""Server Room B""}"
+evt-009,2025-02-12T14:25:00Z,dev-103,TRAFFIC_SPIKE,CRITICAL,"Unusual traffic spike detected.","{""bandwidth"": ""1200 Mbps"", ""threshold"": ""500 Mbps""}"
+evt-010,2025-02-12T14:30:00Z,dev-107,FAILED_LOGIN,WARN,"Multiple failed login attempts detected.","{""username"": ""root"", ""ip"": ""192.168.1.107""}"
