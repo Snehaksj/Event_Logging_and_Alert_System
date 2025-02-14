@@ -9,10 +9,6 @@ import {
 } from "@tanstack/react-table";
 import {
   ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
   Search,
 } from "lucide-react";
 import eventData from "../data/data.json"; // adjust path as needed
@@ -90,15 +86,17 @@ export default function Event() {
 
   return (
     <>
-      <h4 className="p-1 text-lg">Event Logs</h4>
-      <div className="flex flex-col w-full h-[400px] mx-auto p-3 bg-gray-900 text-gray-300 rounded-lg">
+      <h4 className="pl-1 text-gray-400 text-lg" style={{ textShadow: '0px 0px 30px rgb(29, 120, 248)' }}>
+        Event Logs
+      </h4>
+      <div className="flex flex-col w-full h-[400px] mx-auto p-3 bg-slate-900 text-gray-300 rounded-lg">
         {/* Dark-themed search bar */}
         <div className="mb-4 relative">
           <input
             value={globalFilter ?? ""}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Search..."
-            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:ring-indigo-400 focus:border-indigo-400 text-gray-300"
+            className="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-md shadow-sm focus:ring-indigo-400 focus:border-indigo-400 text-gray-300 bg-slate-900"
           />
           <Search
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
@@ -106,16 +104,16 @@ export default function Event() {
           />
         </div>
 
-        {/* Table container with dark grey background, rounded borders, and scrollable */}
-        <div className="overflow-y-auto bg-gray-800 shadow-md rounded-lg">
-          <table className="w-full divide-y divide-gray-700">
-            <thead className="bg-gray-700 sticky top-0 z-10">
+        {/* Table container with custom scrollbar */}
+        <div className="overflow-x-auto bg-slate-900 shadow-md rounded-lg custom-scrollbar">
+          <table className="w-full divide-y divide-gray-700 table-auto">
+            <thead className="bg-slate-900 sticky top-0 z-10">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300"
+                      className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300"
                     >
                       <div
                         {...{
@@ -142,7 +140,7 @@ export default function Event() {
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-4 py-3 whitespace-nowrap text-sm text-gray-300"
+                      className="px-2 py-3 whitespace-nowrap text-sm text-gray-300"
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
