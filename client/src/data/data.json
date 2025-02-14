@@ -1,0 +1,183 @@
+[
+    {
+      "eventId": "evt-001",
+      "timestamp": "2025-02-12T14:00:00Z",
+      "deviceId": "dev-101",
+      "eventType": "DEVICE_ONLINE",
+      "severity": "INFO",
+      "message": "Device came online.",
+      "metadata": { "ip": "192.168.1.101", "location": "Server Room A" }
+    },
+    {
+      "eventId": "evt-002",
+      "timestamp": "2025-02-12T14:05:00Z",
+      "deviceId": "dev-102",
+      "eventType": "FAILED_LOGIN",
+      "severity": "WARN",
+      "message": "Failed login attempt detected.",
+      "metadata": { "username": "admin", "ip": "192.168.1.102" }
+    },
+    {
+      "eventId": "evt-003",
+      "timestamp": "2025-02-12T14:07:30Z",
+      "deviceId": "dev-103",
+      "eventType": "TRAFFIC_SPIKE",
+      "severity": "CRITICAL",
+      "message": "Unusual traffic spike detected.",
+      "metadata": { "bandwidth": "950 Mbps", "threshold": "500 Mbps" }
+    },
+    {
+      "eventId": "evt-004",
+      "timestamp": "2025-02-12T14:10:00Z",
+      "deviceId": "dev-104",
+      "eventType": "DEVICE_OFFLINE",
+      "severity": "ERROR",
+      "message": "Device went offline unexpectedly.",
+      "metadata": { "ip": "192.168.1.104", "last_online": "2025-02-12T14:09:50Z" }
+    },
+    {
+      "eventId": "evt-005",
+      "timestamp": "2025-02-12T14:12:00Z",
+      "deviceId": "dev-105",
+      "eventType": "SECURITY_BREACH",
+      "severity": "CRITICAL",
+      "message": "Potential security breach detected.",
+      "metadata": { "ip": "192.168.1.105", "details": "Multiple unauthorized access attempts" }
+    },
+    {
+      "eventId": "evt-006",
+      "timestamp": "2025-02-12T14:15:00Z",
+      "deviceId": "dev-106",
+      "eventType": "SUCCESSFUL_LOGIN",
+      "severity": "INFO",
+      "message": "User login successful.",
+      "metadata": { "username": "jdoe", "ip": "192.168.1.106" }
+    },
+    {
+      "eventId": "evt-007",
+      "timestamp": "2025-02-12T14:20:00Z",
+      "deviceId": "dev-101",
+      "eventType": "FAILED_LOGIN",
+      "severity": "WARN",
+      "message": "Failed login attempt detected.",
+      "metadata": { "username": "jdoe", "ip": "192.168.1.101" }
+    },
+    {
+      "eventId": "evt-008",
+      "timestamp": "2025-02-12T14:22:00Z",
+      "deviceId": "dev-102",
+      "eventType": "DEVICE_ONLINE",
+      "severity": "INFO",
+      "message": "Device came online.",
+      "metadata": { "ip": "192.168.1.102", "location": "Server Room B" }
+    },
+    {
+      "eventId": "evt-009",
+      "timestamp": "2025-02-12T14:25:00Z",
+      "deviceId": "dev-103",
+      "eventType": "TRAFFIC_SPIKE",
+      "severity": "CRITICAL",
+      "message": "Unusual traffic spike detected.",
+      "metadata": { "bandwidth": "1200 Mbps", "threshold": "500 Mbps" }
+    },
+    {
+      "eventId": "evt-010",
+      "timestamp": "2025-02-12T14:30:00Z",
+      "deviceId": "dev-107",
+      "eventType": "FAILED_LOGIN",
+      "severity": "WARN",
+      "message": "Multiple failed login attempts detected.",
+      "metadata": { "username": "root", "ip": "192.168.1.107" }
+    },
+    {
+      "eventId": "evt-011",
+      "timestamp": "2025-02-12T14:35:00Z",
+      "deviceId": "dev-108",
+      "eventType": "DEVICE_OFFLINE",
+      "severity": "ERROR",
+      "message": "Device offline for maintenance.",
+      "metadata": { "ip": "192.168.1.108", "expected_duration": "10 minutes" }
+    },
+    {
+      "eventId": "evt-012",
+      "timestamp": "2025-02-12T14:40:00Z",
+      "deviceId": "dev-109",
+      "eventType": "SECURITY_BREACH",
+      "severity": "CRITICAL",
+      "message": "Suspicious activity detected.",
+      "metadata": { "ip": "192.168.1.109", "action": "unauthorized file access" }
+    },
+    {
+      "eventId": "evt-013",
+      "timestamp": "2025-02-12T14:45:00Z",
+      "deviceId": "dev-110",
+      "eventType": "SUCCESSFUL_LOGIN",
+      "severity": "INFO",
+      "message": "User login successful.",
+      "metadata": { "username": "asmith", "ip": "192.168.1.110" }
+    },
+    {
+      "eventId": "evt-014",
+      "timestamp": "2025-02-12T14:50:00Z",
+      "deviceId": "dev-101",
+      "eventType": "DEVICE_REBOOT",
+      "severity": "NOTICE",
+      "message": "Device rebooted normally.",
+      "metadata": { "ip": "192.168.1.101" }
+    },
+    {
+      "eventId": "evt-015",
+      "timestamp": "2025-02-12T14:55:00Z",
+      "deviceId": "dev-102",
+      "eventType": "FAILED_LOGIN",
+      "severity": "WARN",
+      "message": "Failed login attempt detected.",
+      "metadata": { "username": "guest", "ip": "192.168.1.102" }
+    },
+    {
+      "eventId": "evt-016",
+      "timestamp": "2025-02-12T15:00:00Z",
+      "deviceId": "dev-103",
+      "eventType": "TRAFFIC_SPIKE",
+      "severity": "CRITICAL",
+      "message": "Significant increase in network traffic.",
+      "metadata": { "bandwidth": "800 Mbps", "threshold": "500 Mbps" }
+    },
+    {
+      "eventId": "evt-017",
+      "timestamp": "2025-02-12T15:05:00Z",
+      "deviceId": "dev-104",
+      "eventType": "DEVICE_ONLINE",
+      "severity": "INFO",
+      "message": "Device back online after outage.",
+      "metadata": { "ip": "192.168.1.104", "location": "Server Room C" }
+    },
+    {
+      "eventId": "evt-018",
+      "timestamp": "2025-02-12T15:10:00Z",
+      "deviceId": "dev-105",
+      "eventType": "SECURITY_BREACH",
+      "severity": "CRITICAL",
+      "message": "Unusual activity detected on sensitive device.",
+      "metadata": { "ip": "192.168.1.105", "details": "Unexpected configuration change" }
+    },
+    {
+      "eventId": "evt-019",
+      "timestamp": "2025-02-12T15:15:00Z",
+      "deviceId": "dev-106",
+      "eventType": "SUCCESSFUL_LOGIN",
+      "severity": "INFO",
+      "message": "User login successful.",
+      "metadata": { "username": "mbrown", "ip": "192.168.1.106" }
+    },
+    {
+      "eventId": "evt-020",
+      "timestamp": "2025-02-12T15:20:00Z",
+      "deviceId": "dev-107",
+      "eventType": "FAILED_LOGIN",
+      "severity": "WARN",
+      "message": "Multiple failed login attempts detected.",
+      "metadata": { "username": "admin", "ip": "192.168.1.107" }
+    }
+  ]
+  

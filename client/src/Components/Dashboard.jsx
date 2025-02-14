@@ -8,24 +8,26 @@ import Nav from "./Nav";
 
 const Dashboard = () => {
   return (
-    <div className="h-screen flex flex-col">
+
+
+    <div className="h-screen flex flex-col overflow-auto bg-black">
       <Nav />
 
       
 
-      <div className="flex flex-grow p-4 gap-2">
+      <div className="flex flex-grow p-3 gap-2">
 
         {/* Left part */}
-        <div className="left flex flex-col w-3/4 border h-full p-2">
+        <div className="left flex flex-col w-3/4 border gap-2  h-full p-2">
+
           <Event />
           <TrafficGraph />
         </div>
 
         {/* Right part */}
 
-      
+        <div className="right flex w-1/4 flex-col">
 
-        <div className="right flex w-1/4 border flex-col h-full">
 
           <Alarm />
           <PacketLoss />
