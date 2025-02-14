@@ -1,10 +1,10 @@
-package sas.nms_backend;
+package com.example.alertsystem.Kafka;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class NmsBackendApplicationTests {
+class KafkaApplicationTests {
 
 	@Test
 	void contextLoads() {
