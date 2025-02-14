@@ -32,7 +32,7 @@ const TrafficGraph = () => {
             labels: ["A", "B", "C", "D", "E", "F", "G"],
             datasets: [
               {
-                label: "Latency",
+                label: "Traffic",
                 data: [100, 300, 200, 300, 250, 400, 350],
                 backgroundColor: "rgba(6, 79, 240, 0.3)",
                 borderColor: "#064FF0",
