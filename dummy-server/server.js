@@ -37,7 +37,7 @@ async function readExcelAndSendData() {
     const record = jsonData[index];
     try {
       // Await axios call to ensure it's asynchronous
-      const response = await axios.post(`http://localhost:${PORT}/api/events`, record);
+      const response = await axios.post(`http://localhost:8080/alert`, record);
       console.log(`Record ${index+1} sent successfully:`, response.data);
     } catch (error) {
       console.error(`Error sending record ${index + 1}:`, error.message);
@@ -50,7 +50,7 @@ async function readExcelAndSendData() {
   }
 
   console.log("All records have been sent.");
-
+}
 // Endpoint to send real-time data to clients
 app.get("/api/live-data", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
@@ -120,7 +120,7 @@ function sendTrafficData() {
 // Start sending data when the server starts
 sendLiveData();
 sendTrafficData();
-
+readExcelAndSendData();
 app.listen(PORT, () => {
   console.log(`Dummy server running on port ${PORT}`);
 });
