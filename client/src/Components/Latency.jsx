@@ -42,10 +42,6 @@ const Latency = () => {
               },
               legend: {
                 display: false,
-                position: "top",
-                labels: {
-                  color: "rgba(252, 250, 250, 0.74)",
-                },
               },
               datalabels: {
                 color: "rgba(252, 250, 250, 0.74)",
@@ -67,6 +63,9 @@ const Latency = () => {
                 },
                 angleLines: {
                   color: "rgba(255, 255, 255, 0.7)",
+                },
+                ticks: {
+                  display: false, // Removes Y-axis (radial) labels
                 },
               },
             },

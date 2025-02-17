@@ -5,48 +5,56 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
-  Title
+  Title,
+  Tooltip,
+  Legend
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-Chart.register(CategoryScale, LinearScale, BarElement, Title, ChartDataLabels);
+Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
 
 const PacketLossBarChart = () => {
   return (
-    <div className="bottom flex justify-center items-center h-[200px] w-full bg-[#0A192F] p-4 rounded-xl shadow-lg">
+    <div className="bottom flex justify-center items-center h-[300px] w-full bg-[#0A192F] p-6 rounded-2xl shadow-xl">
       <Bar
         data={{
           labels: ["A", "B", "C", "D", "E"],
           datasets: [
             {
               label: "Packet Loss",
-              data: [10, 19, 10, 15, 20, 25],
+              data: [10, 19, 10, 15, 20],
               backgroundColor: [
-                "rgba(255, 99, 132, 0.7)",
-                "rgba(54, 162, 235, 0.7)",
-                "rgba(255, 206, 86, 0.7)",
-                "rgba(75, 192, 192, 0.7)",
-                "rgba(153, 102, 255, 0.7)",
-                "rgba(255, 159, 64, 0.7)"
+                "rgba(255, 99, 132, 0.8)",
+                "rgba(54, 162, 235, 0.8)",
+                "rgba(255, 206, 86, 0.8)",
+                "rgba(75, 192, 192, 0.8)",
+                "rgba(153, 102, 255, 0.8)"
               ],
               borderColor: "#FFF",
               borderWidth: 2,
+              hoverBackgroundColor: "rgba(255, 255, 255, 0.9)",
             },
           ],
         }}
         options={{
+          responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             title: {
               display: true,
               text: "PACKET LOSS",
-              font: { size: 18 },
+              font: { size: 20, weight: "bold" },
               color: "#FFF",
+              padding: { bottom: 10 },
             },
             legend: {
               display: false,
             },
             tooltip: {
               enabled: true,
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              titleFont: { size: 14 },
+              bodyFont: { size: 12 },
             },
             datalabels: {
               anchor: "end",
@@ -55,13 +63,16 @@ const PacketLossBarChart = () => {
               font: {
                 weight: "bold",
               },
-              formatter: (value) => value,
+              formatter: (value) => value + "%",
             },
           },
           scales: {
             x: {
               ticks: {
                 color: "#FFF",
+                font: {
+                  size: 14,
+                },
               },
               grid: {
                 color: "rgba(255, 255, 255, 0.3)",
@@ -70,9 +81,12 @@ const PacketLossBarChart = () => {
             y: {
               ticks: {
                 color: "#FFF",
+                font: {
+                  size: 14,
+                },
                 stepSize: 5,
                 callback: function (value) {
-                  return value;
+                  return value + "%";
                 },
               },
               grid: {
