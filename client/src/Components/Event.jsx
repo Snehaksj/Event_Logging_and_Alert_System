@@ -76,13 +76,12 @@ export default function Event() {
         console.error("Error fetching data:", error);
       }
     };
-  
+
     fetchData();  // Fetch data initially
     const intervalId = setInterval(fetchData, 5000);  // Fetch data every 7 seconds
-  
+
     return () => clearInterval(intervalId);  // Clean up interval on component unmount
   }, []);
-  
 
   const table = useReactTable({
     data,
@@ -104,7 +103,7 @@ export default function Event() {
       <h4 className="pl-1 text-gray-400 text-lg" style={{ textShadow: '0px 0px 30px rgb(29, 120, 248)' }}>
         Event Logs
       </h4>
-      <div className="flex flex-col w-full h-[500px] mx-auto p-3 bg-slate-900 text-gray-300 rounded-lg">
+      <div className="flex flex-col w-full max-h-[500px] mx-auto p-3 bg-slate-900 text-gray-300 rounded-lg">
         {/* Dark-themed search bar */}
         <div className="mb-4 relative">
           <input
@@ -119,8 +118,8 @@ export default function Event() {
           />
         </div>
 
-        {/* Table container with custom scrollbar */}
-        <div className="overflow-x-auto bg-slate-900 shadow-md rounded-lg custom-scrollbar">
+        {/* Table container with dynamic height and scroll */}
+        <div className="overflow-y-auto max-h-[500px] bg-slate-900 shadow-md rounded-lg custom-scrollbar">
           <table className="w-full divide-y divide-gray-700 table-auto">
             <thead className="bg-slate-900 sticky top-0 z-10">
               {table.getHeaderGroups().map((headerGroup) => (
