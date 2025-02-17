@@ -15,11 +15,13 @@ public class AlertProducer {
     }
 
     public void sendAlert(Alert alert) {
-        String topic = switch (alert.getType().toLowerCase()) {
+        String topic = switch (alert.getSeverity().toLowerCase()) {
             case "critical" -> "critical-topic";
             case "warning" -> "warning-topic";
-            case "general" -> "general-topic";
-            default -> throw new IllegalArgumentException("Invalid alert type: " + alert.getType());
+            case "major" -> "major-topic";
+            case "minor" -> "minor-topic";
+            case "info" -> "info-topic";
+            default -> throw new IllegalArgumentException("Invalid alert type: " + alert.getSeverity());
         };
         kafkaTemplate.send(topic, alert);
     }

@@ -17,16 +17,26 @@ public class AlertConsumer {
 
     @KafkaListener(topics = "critical-topic", groupId = "alert-group")
     public void consumeCritical(@NotNull Alert alert) {
-        alertStorage.addAlert("CRITICAL: " + alert.getMessage());
+        alertStorage.addAlert(alert);
     }
 
     @KafkaListener(topics = "warning-topic", groupId = "alert-group")
     public void consumeWarning(@NotNull Alert alert) {
-        alertStorage.addAlert("WARNING: " + alert.getMessage());
+        alertStorage.addAlert(alert);
     }
 
-    @KafkaListener(topics = "general-topic", groupId = "alert-group")
-    public void consumeGeneral(@org.jetbrains.annotations.NotNull Alert alert) {
-        alertStorage.addAlert("GENERAL: " + alert.getMessage());
+    @KafkaListener(topics = "major-topic", groupId = "alert-group")
+    public void consumeMajor(@org.jetbrains.annotations.NotNull Alert alert) {
+        alertStorage.addAlert(alert);
+    }
+
+    @KafkaListener(topics = "minor-topic", groupId = "alert-group")
+    public void consumeMinor(@org.jetbrains.annotations.NotNull Alert alert) {
+        alertStorage.addAlert(alert);
+    }
+
+    @KafkaListener(topics = "info-topic", groupId = "alert-group")
+    public void consumeInfo(@org.jetbrains.annotations.NotNull Alert alert) {
+        alertStorage.addAlert(alert);
     }
 }

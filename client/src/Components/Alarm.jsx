@@ -44,7 +44,7 @@ export default function Alarm() {
         className="flex flex-col w-full max-h-[400px] mx-auto p-3 rounded-lg"
         style={{
           
-          background: "linear-gradient(90deg,rgba(60,11,194,1) 0%, rgba(54,12,176,1) 59%, rgba(116,27,210,1) 100%)"
+          background:"rgba(60,11,194,1)"
         }}
       >
         {/* Table container with custom scrollbar */}

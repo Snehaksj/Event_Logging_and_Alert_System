@@ -21,6 +21,36 @@ app.post("/api/events", (req, res) => {
   res.status(200).json({ message: "Event received" });
 });
 
+
+// Function to read Excel file and send records one at a time
+async function readExcelAndSendData() {
+  // Path to the Excel file (data.xlsx should be in the same directory as server.js)
+  const filePath = path.join(__dirname, "data.xlsx");
+  const workbook = xlsx.readFile(filePath);
+  // Assuming data is in the first sheet
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+  const jsonData = xlsx.utils.sheet_to_json(worksheet);
+
+  console.log("Excel data loaded. Total records:", jsonData.length);
+  for (let index = 0; index < jsonData.length; index++) {
+    const record = jsonData[index];
+    try {
+      // Await axios call to ensure it's asynchronous
+      const response = await axios.post(`http://localhost:${PORT}/api/events`, record);
+      console.log(`Record ${index+1} sent successfully:`, response.data);
+    } catch (error) {
+      console.error(`Error sending record ${index + 1}:`, error.message);
+    }
+
+    // Wait for 10 seconds before sending the next record
+    if (index < jsonData.length - 1) {
+      await new Promise(resolve => setTimeout(resolve, 10000)); // Delay of 10 seconds
+    }
+  }
+
+  console.log("All records have been sent.");
+
 // Endpoint to send real-time data to clients
 app.get("/api/live-data", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
@@ -64,6 +94,7 @@ function sendLiveData() {
   }
 
   setTimeout(sendLiveData, 7000);
+
 }
 
 // Function to send dynamic traffic data

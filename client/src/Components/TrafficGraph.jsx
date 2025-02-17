@@ -81,6 +81,7 @@ const TrafficGraph = () => {
                 bodyColor: "#FFF",
                 borderColor: "#064FF0",
                 borderWidth: 1,
+
               },
             },
             scales: {
