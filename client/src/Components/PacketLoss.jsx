@@ -36,7 +36,7 @@ const PacketLossBarChart = () => {
   }, []);
 
   return (
-    <div className="bottom flex justify-center items-center h-[300px] w-full bg-[#0A192F] p-6 rounded-2xl shadow-xl">
+    <div className="bottom flex justify-center items-center h-[400px] w-full bg-[#0A192F] p-6 rounded-2xl shadow-xl">
       <Bar
         data={{
           labels: ["1", "2", "3", "4", "5"],
@@ -58,13 +58,14 @@ const PacketLossBarChart = () => {
           ],
         }}
         options={{
+          maintainAspectRatio: false, // Allow the chart to resize freely
           plugins: {
             title: {
               display: true,
               text: "PACKET LOSS",
               font: { size: 20, weight: "bold" },
               color: "#FFF",
-              padding: { bottom: 20 }, // Increased bottom padding for more gap
+              padding: { bottom: 20 },
             },
             legend: {
               display: false,
@@ -106,11 +107,10 @@ const PacketLossBarChart = () => {
                 color: "rgba(255, 255, 255, 0.3)",
               },
               suggestedMin: 0,
-              suggestedMax: 30,
+              suggestedMax: 40, // Increased suggested max for more space
             },
           },
         }}
-        
       />
     </div>
   );

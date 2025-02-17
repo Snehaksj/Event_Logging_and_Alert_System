@@ -73,6 +73,7 @@ const TrafficGraph = () => {
                 display: true,
                 position: "top",
                 labels: { color: "#FFFFFF" },
+                
               },
               tooltip: {
                 enabled: true,
