@@ -10,7 +10,14 @@ import {
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-Chart.register(RadialLinearScale, PointElement, LineElement, Title, Legend, ChartDataLabels);
+Chart.register(
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Legend,
+  ChartDataLabels
+);
 
 const Latency = () => {
   const [latencyData, setLatencyData] = useState([]);
@@ -75,7 +82,6 @@ const Latency = () => {
             },
             scales: {
               r: {
-
                 grid: {
                   color: "rgba(255, 255, 255, 0.3)",
                 },
@@ -88,9 +94,8 @@ const Latency = () => {
                 ticks: {
                   display: false, // Removes Y-axis (radial) labels
                 },
-
               },
-            },
+            },            
           }}
         />
       </div>
