@@ -42,7 +42,7 @@ const TrafficGraph = () => {
                 borderColor: "#064FF0",
                 borderWidth: 2,
                 pointBackgroundColor: "#FFFFFF",
-                pointBorderColor: "#064FF0",
+                pointBorderColor: "#064FF0", // circle
                 pointHoverRadius: 7,
                 pointRadius: 5,
                 tension: 0.45,
@@ -59,6 +59,15 @@ const TrafficGraph = () => {
                 text: "Network Traffic Analysis",
                 font: { size: 20 },
                 color: "#FFFFFF",
+              },
+              datalabels: {
+                anchor: "end",
+                align: "top",
+                color: "#FFF",
+                font: {
+                  weight: "bold",
+                },
+                formatter: (value) => value,
               },
               legend: {
                 display: true,

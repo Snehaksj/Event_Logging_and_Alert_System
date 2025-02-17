@@ -62,7 +62,9 @@ const Latency = () => {
                 font: { size: 18 },
                 color: "#FFF",
               },
+
               legend: { display: false },
+
               datalabels: {
                 color: "rgba(252, 250, 250, 0.74)",
                 font: { weight: "bold" },
@@ -73,9 +75,20 @@ const Latency = () => {
             },
             scales: {
               r: {
-                grid: { color: "rgba(255, 255, 255, 0.3)" },
-                pointLabels: { color: "#FFF" },
-                angleLines: { color: "rgba(255, 255, 255, 0.7)" },
+
+                grid: {
+                  color: "rgba(255, 255, 255, 0.3)",
+                },
+                pointLabels: {
+                  color: "#FFF",
+                },
+                angleLines: {
+                  color: "rgba(255, 255, 255, 0.7)",
+                },
+                ticks: {
+                  display: false, // Removes Y-axis (radial) labels
+                },
+
               },
             },
           }}
