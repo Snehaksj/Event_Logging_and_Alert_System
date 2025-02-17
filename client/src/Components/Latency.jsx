@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Radar } from "react-chartjs-2";
 import {
   Chart,
@@ -13,16 +13,38 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 Chart.register(RadialLinearScale, PointElement, LineElement, Title, Legend, ChartDataLabels);
 
 const Latency = () => {
+  const [latencyData, setLatencyData] = useState([]);
+
+  useEffect(() => {
+    const eventSource = new EventSource("http://localhost:3000/api/live-data");
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("Received data:", data); // Log received data for debugging
+      setLatencyData((prev) => {
+        const updatedData = [...prev.slice(-4), data.latency]; // Keep only the last 5 latency values
+        console.log("Updated Latency Data:", updatedData); // Log updated latency data
+        return updatedData;
+      });
+    };
+
+    eventSource.onerror = (error) => {
+      console.error("Error in SSE:", error); // Log any errors in the SSE connection
+    };
+
+    return () => eventSource.close();
+  }, []);
+
   return (
     <div className="bottom flex justify-center items-center w-full bg-[#0A192F] p-4 rounded-xl shadow-lg">
       <div className="w-5/6">
         <Radar
           data={{
-            labels: ["A", "B", "C", "D", "E"],
+            labels: ["1", "2", "3", "4", "5"], // You can customize these labels if needed
             datasets: [
               {
-                label: "Latency",
-                data: [100, 300, 200, 300, 250],
+                label: "Latency (ms)",
+                data: latencyData.length === 5 ? latencyData : [...latencyData], // Ensure the data length matches 5
                 backgroundColor: "rgba(6, 79, 240, 0.3)",
                 borderColor: "#064FF0",
                 borderWidth: 3,
@@ -40,14 +62,12 @@ const Latency = () => {
                 font: { size: 18 },
                 color: "#FFF",
               },
-              legend: {
-                display: false,
-              },
+
+              legend: { display: false },
+
               datalabels: {
                 color: "rgba(252, 250, 250, 0.74)",
-                font: {
-                  weight: "bold",
-                },
+                font: { weight: "bold" },
                 formatter: (value) => value,
                 anchor: "end",
                 align: "top",
@@ -55,6 +75,7 @@ const Latency = () => {
             },
             scales: {
               r: {
+
                 grid: {
                   color: "rgba(255, 255, 255, 0.3)",
                 },
@@ -67,6 +88,7 @@ const Latency = () => {
                 ticks: {
                   display: false, // Removes Y-axis (radial) labels
                 },
+
               },
             },
           }}

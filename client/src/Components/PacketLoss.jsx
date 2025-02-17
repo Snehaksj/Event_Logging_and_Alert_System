@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart,
@@ -14,21 +14,35 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
 
 const PacketLossBarChart = () => {
+  const [packetLossData, setPacketLossData] = useState([]);
+
+  useEffect(() => {
+    const eventSource = new EventSource("http://localhost:3000/api/live-data");
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setPacketLossData((prev) => [...prev.slice(-4), data.packetLoss]);
+    };
+
+    return () => eventSource.close();
+  }, []);
+
   return (
     <div className="bottom flex justify-center items-center h-[300px] w-full bg-[#0A192F] p-6 rounded-2xl shadow-xl">
       <Bar
         data={{
-          labels: ["A", "B", "C", "D", "E"],
+          labels: ["1", "2", "3", "4", "5"],
           datasets: [
             {
-              label: "Packet Loss",
-              data: [10, 19, 10, 15, 20],
+
+              label: "Packet Loss (%)",
+              data: packetLossData,
               backgroundColor: [
-                "rgba(255, 99, 132, 0.8)",
-                "rgba(54, 162, 235, 0.8)",
-                "rgba(255, 206, 86, 0.8)",
-                "rgba(75, 192, 192, 0.8)",
-                "rgba(153, 102, 255, 0.8)"
+                "rgba(255, 99, 132, 0.7)", // Color for first bar
+                "rgba(54, 162, 235, 0.7)", // Color for second bar
+                "rgba(255, 206, 86, 0.7)", // Color for third bar
+                "rgba(75, 192, 192, 0.7)", // Color for fourth bar
+                "rgba(153, 102, 255, 0.7)", // Color for fifth bar
               ],
               borderColor: "#FFF",
               borderWidth: 2,
@@ -47,6 +61,7 @@ const PacketLossBarChart = () => {
               color: "#FFF",
               padding: { bottom: 10 },
             },
+
             legend: {
               display: false,
             },
@@ -56,9 +71,13 @@ const PacketLossBarChart = () => {
               titleFont: { size: 14 },
               bodyFont: { size: 12 },
             },
+
             datalabels: {
+              color: "#FFF",
+              font: { weight: "bold" },
               anchor: "end",
               align: "top",
+
               color: "#FFF",
               font: {
                 weight: "bold",
@@ -95,6 +114,7 @@ const PacketLossBarChart = () => {
               suggestedMin: 0,
               suggestedMax: 30,
             },
+
           },
         }}
       />
