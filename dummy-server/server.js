@@ -21,7 +21,7 @@ app.post("/api/events", (req, res) => {
 });
 
 // Function to read Excel file and send records one at a time
-function readExcelAndSendData() {
+async function readExcelAndSendData() {
   // Path to the Excel file (data.xlsx should be in the same directory as server.js)
   const filePath = path.join(__dirname, "data.xlsx");
   const workbook = xlsx.readFile(filePath);
@@ -31,24 +31,23 @@ function readExcelAndSendData() {
   const jsonData = xlsx.utils.sheet_to_json(worksheet);
 
   console.log("Excel data loaded. Total records:", jsonData.length);
-  let index = 0;
-  const intervalId = setInterval(() => {
-    if (index >= jsonData.length) {
-      console.log("All records have been sent.");
-      clearInterval(intervalId);
-      return;
-    }
+  for (let index = 0; index < jsonData.length; index++) {
     const record = jsonData[index];
-    axios
-      .post(`http://localhost:${PORT}/api/events`, record)
-      .then((response) => {
-        console.log(`Record ${index + 1} sent successfully:`, response.data);
-      })
-      .catch((error) => {
-        console.error(`Error sending record ${index + 1}:`, error.message);
-      });
-    index++;
-  }, 10000); // 10,000 ms = 10 seconds
+    try {
+      // Await axios call to ensure it's asynchronous
+      const response = await axios.post(`http://localhost:${PORT}/api/events`, record);
+      console.log(`Record ${index+1} sent successfully:`, response.data);
+    } catch (error) {
+      console.error(`Error sending record ${index + 1}:`, error.message);
+    }
+
+    // Wait for 10 seconds before sending the next record
+    if (index < jsonData.length - 1) {
+      await new Promise(resolve => setTimeout(resolve, 10000)); // Delay of 10 seconds
+    }
+  }
+
+  console.log("All records have been sent.");
 }
 
 app.listen(PORT, () => {

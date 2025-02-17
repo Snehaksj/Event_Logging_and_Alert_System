@@ -1,5 +1,6 @@
 package com.example.alertsystem.Kafka.storage;
 
+import com.example.alertsystem.Kafka.model.Alert;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -10,8 +11,8 @@ public class AlertStorage {
 
     private final List<String> alerts = new ArrayList<>();
 
-    public synchronized void addAlert(String alert) {
-        alerts.add(alert);
+    public synchronized void addAlert(Alert alert) {
+        alerts.add(alert.getEventId()+alert.getTimestamp()+alert.getDeviceId()+ alert.getEventType()+alert.getIpAddress()+alert.getSeverity()+alert.getMessage());
     }
 
     public synchronized List<String> getAlerts() {
