@@ -8,7 +8,12 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',  // Allow React frontend (or you can use '*' to allow all origins)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
+}));
+
 
 let clients = [];
 let trafficClients = [];
@@ -45,7 +50,7 @@ async function readExcelAndSendData() {
 
     // Wait for 10 seconds before sending the next record
     if (index < jsonData.length - 1) {
-      await new Promise(resolve => setTimeout(resolve, 10000)); // Delay of 10 seconds
+      await new Promise(resolve => setTimeout(resolve, 5000)); // Delay of 10 seconds
     }
   }
 
@@ -93,14 +98,14 @@ function sendLiveData() {
     console.log("Sent live data:", dynamicData);
   }
 
-  setTimeout(sendLiveData, 7000);
+  setTimeout(sendLiveData, 5000);
 
 }
 
 // Function to send dynamic traffic data
 function sendTrafficData() {
   if (trafficClients.length > 0) {
-    const newTrafficValue = Math.floor(Math.random() * 500);
+    const newTrafficValue = Math.floor(Math.random() * 390);
     
     // Maintain last 7 values in history
     trafficHistory = [...trafficHistory.slice(1), newTrafficValue];
@@ -114,7 +119,7 @@ function sendTrafficData() {
     console.log("Sent traffic data:", trafficData);
   }
 
-  setTimeout(sendTrafficData, 7000);
+  setTimeout(sendTrafficData, 5000);
 }
 
 // Start sending data when the server starts
