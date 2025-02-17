@@ -41,7 +41,7 @@ export default function Alarm() {
     fetchData(); // Fetch data initially
 
     // Optionally, you can add an interval for periodic fetching:
-    const intervalId = setInterval(fetchData, 5000); // Fetch every 7 seconds
+    const intervalId = setInterval(fetchData, 5000); // Fetch every 5 seconds
 
     return () => clearInterval(intervalId); // Clean up interval on component unmount
   }, []);
@@ -59,15 +59,15 @@ export default function Alarm() {
     <>
       <h4 className="p-1 text-lg text-gray-400">Critical Alarm Logs</h4>
       <div
-        className="flex flex-col  w-full h-[300px] mx-auto p-3 rounded-lg"
+        className="flex flex-col w-full mx-auto p-3 rounded-lg"
         style={{
           background: "rgba(60,11,194,1)",
         }}
       >
-        {/* Table container with custom scrollbar */}
-        <div className="overflow-y-auto rounded-lg custom-scrollbar">
+        {/* Table container with max height and scroll */}
+        <div className="overflow-y-auto max-h-[300px] rounded-lg custom-scrollbar">
           <table className="w-full divide-y divide-gray-100 sticky">
-            <thead className="sticky top-0 z-10  " style={{background: "rgba(60,11,194,1)"}}>
+            <thead className="sticky top-0 z-10" style={{ background: "rgba(60,11,194,1)" }}>
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
