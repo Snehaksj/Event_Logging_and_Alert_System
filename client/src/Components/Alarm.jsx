@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   createColumnHelper,
   flexRender,
@@ -7,7 +8,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import eventData from "../data/data.json"; // adjust path as needed
 
 const columnHelper = createColumnHelper();
 
@@ -23,10 +23,28 @@ const columns = [
 ];
 
 export default function Alarm() {
-  const [data] = React.useState(() =>
-    eventData.filter((log) => log.severity === "CRITICAL") // Only include critical logs
-  );
-  const [sorting, setSorting] = React.useState([]); // Sorting state
+  const [data, setData] = useState([]); // State to hold the data
+  const [sorting, setSorting] = useState([]); // Sorting state
+
+  // Fetch data from the endpoint on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/alert/critical");
+        setData(response.data); // Set the fetched data
+        console.log(response.data); // Log the response data
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData(); // Fetch data initially
+
+    // Optionally, you can add an interval for periodic fetching:
+    const intervalId = setInterval(fetchData, 5000); // Fetch every 7 seconds
+
+    return () => clearInterval(intervalId); // Clean up interval on component unmount
+  }, []);
 
   const table = useReactTable({
     data,
@@ -41,16 +59,15 @@ export default function Alarm() {
     <>
       <h4 className="p-1 text-lg text-gray-400">Critical Alarm Logs</h4>
       <div
-        className="flex flex-col w-full max-h-[400px] mx-auto p-3 rounded-lg"
+        className="flex flex-col  w-full h-[300px] mx-auto p-3 rounded-lg"
         style={{
-          
-          background:"rgba(60,11,194,1)"
+          background: "rgba(60,11,194,1)",
         }}
       >
         {/* Table container with custom scrollbar */}
-        <div className="overflow-y-auto  rounded-lg custom-scrollbar">
-          <table className="w-full divide-y divide-gray-100">
-            <thead className=" sticky top-0 z-10">
+        <div className="overflow-y-auto rounded-lg custom-scrollbar">
+          <table className="w-full divide-y divide-gray-100 sticky">
+            <thead className="sticky top-0 z-10  " style={{background: "rgba(60,11,194,1)"}}>
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -79,7 +96,7 @@ export default function Alarm() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="hover:bg-">
+                <tr key={row.id} className="hover:bg-blue-900">
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}

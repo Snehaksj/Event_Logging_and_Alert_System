@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";  // Import axios
 import {
   createColumnHelper,
   flexRender,
@@ -7,11 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  ArrowUpDown,
-  Search,
-} from "lucide-react";
-import eventData from "../data/data.json"; // adjust path as needed
+import { ArrowUpDown, Search } from "lucide-react";
 
 const columnHelper = createColumnHelper();
 
@@ -32,9 +29,8 @@ const columns = [
     header: () => <span className="flex items-center">Event Type</span>,
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor((row) => row.metadata?.ip || "", {
-    id: "ipAddress",
-    header: () => <span className="flex items-center">IP Address</span>,
+  columnHelper.accessor("ipAddress", {
+    header: () => <span className="flex items-center">IP ADDRESS</span>,
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor("severity", {
@@ -44,14 +40,14 @@ const columns = [
       let colorClass = "text-gray-300";
       if (value === "CRITICAL") {
         colorClass = "text-red-500";
-      } else if (value === "ERROR") {
+      } else if (value === "MAJOR") {
         colorClass = "text-red-400";
-      } else if (value === "WARN") {
+      } else if (value === "WARNING") {
         colorClass = "text-yellow-400";
       } else if (value === "INFO") {
         colorClass = "text-blue-300";
-      } else if (value === "NOTICE") {
-        colorClass = "text-green-400";
+      } else if (value === "MINOR") {
+        colorClass = "text-red-200";
       }
       return <span className={colorClass}>{info.getValue()}</span>;
     },
@@ -63,11 +59,30 @@ const columns = [
 ];
 
 export default function Event() {
-  const [data] = React.useState(() => [...eventData]);
-  const [sorting, setSorting] = React.useState([]);
-  const [globalFilter, setGlobalFilter] = React.useState("");
-  const [pageIndex, setPageIndex] = React.useState(0); // Page index state
-  const [pageSize, setPageSize] = React.useState(5); // Page size state
+  const [data, setData] = useState([]);
+  const [sorting, setSorting] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
+
+  // Fetch data every 7 seconds using axios
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/alert");
+        setData(response.data); // Set the data first
+        console.log(response.data); // Log the response data after setting
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+    fetchData();  // Fetch data initially
+    const intervalId = setInterval(fetchData, 5000);  // Fetch data every 7 seconds
+  
+    return () => clearInterval(intervalId);  // Clean up interval on component unmount
+  }, []);
+  
 
   const table = useReactTable({
     data,
@@ -89,7 +104,7 @@ export default function Event() {
       <h4 className="pl-1 text-gray-400 text-lg" style={{ textShadow: '0px 0px 30px rgb(29, 120, 248)' }}>
         Event Logs
       </h4>
-      <div className="flex flex-col w-full h-[400px] mx-auto p-3 bg-slate-900 text-gray-300 rounded-lg">
+      <div className="flex flex-col w-full h-[500px] mx-auto p-3 bg-slate-900 text-gray-300 rounded-lg">
         {/* Dark-themed search bar */}
         <div className="mb-4 relative">
           <input

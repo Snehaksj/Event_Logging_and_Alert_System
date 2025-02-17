@@ -36,10 +36,10 @@ const PacketLossBarChart = () => {
   }, []);
 
   return (
-    <div className="bottom flex justify-center items-center h-[400px] w-full bg-[#0A192F] p-6 rounded-2xl shadow-xl">
+    <div className="bottom flex justify-center items-center h-[350px] w-full bg-[#0A192F] p-6 rounded-2xl shadow-xl">
       <Bar
         data={{
-          labels: ["1", "2", "3", "4", "5"],
+          labels: ["T-20", "T-15", "T-10", "T-5", "T-0"],
           datasets: [
             {
               label: "Packet Loss (%)",

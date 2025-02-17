@@ -1,21 +1,21 @@
 eventId,timestamp,deviceId,eventType,ipAddress,severity,message
-E1001,2025-02-17T12:30:00,device001,FAILED_LOGIN,192.168.1.1,critical,Multiple failed login attempts detected
-E1002,2025-02-17T12:35:00,device002,DEVICE_ONLINE,192.168.1.2,info,Device successfully connected to the network
-E1003,2025-02-17T12:40:00,device003,TRAFFIC_SPIKE,192.168.1.3,major,Network traffic exceeded normal levels
-E1004,2025-02-17T12:45:00,device004,DEVICE_OFFLINE,192.168.1.4,warning,Device lost connection to the network
-E1005,2025-02-17T12:50:00,device005,SECURITY_BREACH,192.168.1.5,critical,Unauthorized access attempt detected
-E1006,2025-02-17T12:55:00,device006,SUCCESSFUL_LOGIN,192.168.1.6,info,User logged in successfully
-E1007,2025-02-17T13:00:00,device007,FAILED_LOGIN,192.168.1.7,major,Failed login attempt after password change
-E1008,2025-02-17T13:05:00,device008,DEVICE_ONLINE,192.168.1.8,info,Device reconnected after a brief outage
-E1009,2025-02-17T13:10:00,device009,TRAFFIC_SPIKE,192.168.1.9,major,High traffic detected on server interface
-E1010,2025-02-17T13:15:00,device010,FAILED_LOGIN,192.168.1.10,warning,Login attempt failed due to incorrect credentials
-E1011,2025-02-17T13:20:00,device011,DEVICE_OFFLINE,192.168.1.11,warning,Device is currently offline
-E1012,2025-02-17T13:25:00,device012,SECURITY_BREACH,192.168.1.12,critical,Multiple failed login attempts, potential brute force attack
-E1013,2025-02-17T13:30:00,device013,SUCCESSFUL_LOGIN,192.168.1.13,info,User logged in successfully from a new device
-E1014,2025-02-17T13:35:00,device014,FAILED_LOGIN,192.168.1.14,warning,Failed login attempt from an unknown IP address
-E1015,2025-02-17T13:40:00,device015,DEVICE_ONLINE,192.168.1.15,info,Device back online after maintenance
-E1016,2025-02-17T13:45:00,device016,TRAFFIC_SPIKE,192.168.1.16,major,Surge in traffic on port 8080
-E1017,2025-02-17T13:50:00,device017,FAILED_LOGIN,192.168.1.17,critical,Repeated failed login attempts detected from IP address 192.168.1.18
-E1018,2025-02-17T13:55:00,device018,DEVICE_OFFLINE,192.168.1.18,minor,Device disconnected unexpectedly
-E1019,2025-02-17T14:00:00,device019,SECURITY_BREACH,192.168.1.19,critical,Security breach detected - unauthorized access attempt
-E1020,2025-02-17T14:05:00,device020,SUCCESSFUL_LOGIN,192.168.1.20,info,Successful login from remote location
+E1001,2025-02-17T12:30:00,device001,FAILED_LOGIN,192.168.1.1,CRITICAL,Multiple failed logins
+E1002,2025-02-17T12:35:00,device002,DEVICE_ONLINE,192.168.1.2,INFO,Device connected
+E1003,2025-02-17T12:40:00,device003,TRAFFIC_SPIKE,192.168.1.3,MAJOR,High traffic levels
+E1004,2025-02-17T12:45:00,device004,DEVICE_OFFLINE,192.168.1.4,WARNING,Device disconnected
+E1005,2025-02-17T12:50:00,device005,SECURITY_BREACH,192.168.1.5,CRITICAL,Unauthorized access
+E1006,2025-02-17T12:55:00,device006,SUCCESSFUL_LOGIN,192.168.1.6,INFO,User logged in
+E1007,2025-02-17T13:00:00,device007,FAILED_LOGIN,192.168.1.7,MAJOR,Failed login attempt
+E1008,2025-02-17T13:05:00,device008,DEVICE_ONLINE,192.168.1.8,INFO,Device reconnected
+E1009,2025-02-17T13:10:00,device009,TRAFFIC_SPIKE,192.168.1.9,MAJOR,High traffic detected
+E1010,2025-02-17T13:15:00,device010,FAILED_LOGIN,192.168.1.10,WARNING,Incorrect login attempt
+E1011,2025-02-17T13:20:00,device011,DEVICE_OFFLINE,192.168.1.11,WARNING,Device offline
+E1012,2025-02-17T13:25:00,device012,SECURITY_BREACH,192.168.1.12,CRITICAL,Potential brute force
+E1013,2025-02-17T13:30:00,device013,SUCCESSFUL_LOGIN,192.168.1.13,INFO,User logged in from new device
+E1014,2025-02-17T13:35:00,device014,FAILED_LOGIN,192.168.1.14,WARNING,Unknown IP login attempt
+E1015,2025-02-17T13:40:00,device015,DEVICE_ONLINE,192.168.1.15,INFO,Device back online
+E1016,2025-02-17T13:45:00,device016,TRAFFIC_SPIKE,192.168.1.16,MAJOR,Traffic surge detected
+E1017,2025-02-17T13:50:00,device017,FAILED_LOGIN,192.168.1.17,CRITICAL,Repeated failed logins
+E1018,2025-02-17T13:55:00,device018,DEVICE_OFFLINE,192.168.1.18,MINOR,Device unexpectedly disconnected
+E1019,2025-02-17T14:00:00,device019,SECURITY_BREACH,192.168.1.19,CRITICAL,Security breach detected
+E1020,2025-02-17T14:05:00,device020,SUCCESSFUL_LOGIN,192.168.1.20,INFO,Login from remote location

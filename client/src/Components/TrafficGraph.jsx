@@ -33,7 +33,7 @@ const TrafficGraph = () => {
       <div className="w-full h-full bg-[#0A192F] p-3 rounded-xl shadow-lg">
         <Line
           data={{
-            labels: ["A", "B", "C", "D", "E", "F", "G"],
+            labels: ["T-30", "T-25", "T-20", "T-15", "T-10", "T-5", "T-0"],
             datasets: [
               {
                 label: "Traffic",
@@ -59,6 +59,7 @@ const TrafficGraph = () => {
                 text: "Network Traffic Analysis",
                 font: { size: 20 },
                 color: "#FFFFFF",
+                
               },
               datalabels: {
                 anchor: "end",
