@@ -7,11 +7,19 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ChartDataLabels
+);
 
 const PacketLossBarChart = () => {
   const [packetLossData, setPacketLossData] = useState([]);
@@ -34,7 +42,6 @@ const PacketLossBarChart = () => {
           labels: ["1", "2", "3", "4", "5"],
           datasets: [
             {
-
               label: "Packet Loss (%)",
               data: packetLossData,
               backgroundColor: [
@@ -51,17 +58,14 @@ const PacketLossBarChart = () => {
           ],
         }}
         options={{
-          responsive: true,
-          maintainAspectRatio: false,
           plugins: {
             title: {
               display: true,
               text: "PACKET LOSS",
               font: { size: 20, weight: "bold" },
               color: "#FFF",
-              padding: { bottom: 10 },
+              padding: { bottom: 20 }, // Increased bottom padding for more gap
             },
-
             legend: {
               display: false,
             },
@@ -71,18 +75,11 @@ const PacketLossBarChart = () => {
               titleFont: { size: 14 },
               bodyFont: { size: 12 },
             },
-
             datalabels: {
               color: "#FFF",
               font: { weight: "bold" },
               anchor: "end",
               align: "top",
-
-              color: "#FFF",
-              font: {
-                weight: "bold",
-              },
-              formatter: (value) => value + "%",
             },
           },
           scales: {
@@ -104,9 +101,6 @@ const PacketLossBarChart = () => {
                   size: 14,
                 },
                 stepSize: 5,
-                callback: function (value) {
-                  return value + "%";
-                },
               },
               grid: {
                 color: "rgba(255, 255, 255, 0.3)",
@@ -114,9 +108,9 @@ const PacketLossBarChart = () => {
               suggestedMin: 0,
               suggestedMax: 30,
             },
-
           },
         }}
+        
       />
     </div>
   );
