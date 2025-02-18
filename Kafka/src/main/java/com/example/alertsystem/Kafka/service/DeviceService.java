@@ -1,22 +1,57 @@
-public Device createDevice(Long userId, String deviceName) {
-    User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+package com.example.alertsystem.Kafka.service;
 
-    Device device = new Device();
-    device.setName(deviceName);
-    device.setConfiguration(List.of()); // Default empty list
-    device.setUser(user);
+import com.example.alertsystem.Kafka.entity.Device;
+import com.example.alertsystem.Kafka.entity.Role;
+import com.example.alertsystem.Kafka.entity.User;
+import com.example.alertsystem.Kafka.repository.DeviceRepository;
+import org.springframework.stereotype.Service;
 
-    return deviceRepository.save(device);
-}
+import java.util.List;
 
-public void deleteDevice(Long deviceId, User loggedInUser) {
-    Device device = deviceRepository.findById(deviceId)
-            .orElseThrow(() -> new RuntimeException("Device not found"));
+@Service
+public class DeviceService {
+    private final DeviceRepository deviceRepository;
 
-    if (loggedInUser.getRole() == Role.ADMIN || device.getUser().getId().equals(loggedInUser.getId())) {
+    public DeviceService(DeviceRepository deviceRepository) {
+        this.deviceRepository = deviceRepository;
+    }
+
+    public void deleteDevice(Long deviceId, User user) {
+        Device device = deviceRepository.findById(deviceId)
+                .orElseThrow(() -> new RuntimeException("Device not found"));
+
+        // Check if the device belongs to the user before deleting (optional)
+        if (!device.getUser().getId().equals(user.getId())) { // Corrected from getUserId() to getUser().getId()
+            throw new RuntimeException("User not authorized to delete this device");
+        }
+
         deviceRepository.delete(device);
-    } else {
-        throw new RuntimeException("Unauthorized to delete this device");
+    }
+
+    public Device createDevice(Long userId, String deviceName) {
+        // Assuming you have a Device entity with userId and deviceName fields
+        Device device = new Device();
+        // You no longer need to set userId directly since you have the User relationship in Device
+        User user = new User();
+        user.setId(userId); // Assuming User exists with this id
+        device.setUser(user);  // Set the user directly
+
+        device.setName(deviceName); // Updated method to set name
+
+        // Save the device to the repository
+        return deviceRepository.save(device);
+    }
+
+    public Device updateDevice(Long deviceId, List<String> configuration, User user) {
+        Device device = deviceRepository.findById(deviceId)
+                .orElseThrow(() -> new RuntimeException("Device not found"));
+
+        // Ensure only the owner or admin can update the device
+        if (!device.getUser().getId().equals(user.getId()) && user.getRole() != Role.ADMIN) {
+            throw new RuntimeException("Unauthorized to update this device");
+        }
+
+        device.setConfiguration(configuration); // Update the configuration
+        return deviceRepository.save(device);
     }
 }

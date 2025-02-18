@@ -1,5 +1,6 @@
 package com.example.alertsystem.Kafka.entity;
 
 public enum Role {
-    USER, ADMIN
+    ADMIN, // Ensure 'ADMIN' is defined here
+    USER;  // Example for a regular user role
 }

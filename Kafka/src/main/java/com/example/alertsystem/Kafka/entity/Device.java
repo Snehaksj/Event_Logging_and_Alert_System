@@ -1,14 +1,9 @@
 package com.example.alertsystem.Kafka.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Device {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,12 +11,19 @@ public class Device {
 
     private String name;
 
-    @ElementCollection
-    @CollectionTable(name = "device_configuration", joinColumns = @JoinColumn(name = "device_id"))
-    @Column(columnDefinition = "TEXT")
-    private List<String> configuration; // Stores JSON strings
+    @ElementCollection // ✅ Store list of configurations
+    private List<String> configuration;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    // ✅ Getters and Setters
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public List<String> getConfiguration() { return configuration; }
+    public void setConfiguration(List<String> configuration) { this.configuration = configuration; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 }
