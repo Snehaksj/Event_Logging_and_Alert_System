@@ -70,7 +70,7 @@ The system integrates Kafka for real-time alert processing:
 
 ## 📸 Screenshot
 
-![Dashboard](https://github.com/aakilshihafv/EventLoggingAlert/blob/main/image/Dashboard.png)
+
 
 ## Contributing 🤝
 
