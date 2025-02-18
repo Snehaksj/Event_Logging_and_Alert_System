@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Context/authContext"; // Import the Auth context
 import Toast from "../Components/Toast.jsx"; // Import the Toast component
 
 const SignupPage = () => {
@@ -12,8 +13,10 @@ const SignupPage = () => {
     passwordMsg: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [showToast, setShowToast] = useState(false); // State for toast visibility
+  const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
+
+  const { signup } = useAuth(); // Destructure signup from auth context
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
@@ -23,25 +26,30 @@ const SignupPage = () => {
     e.preventDefault();
     setErrorMessages({ usernameMsg: "", emailMsg: "", passwordMsg: "" });
 
-    try {
-      const response = await fetch("http://localhost:5000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, email, password }),
+    // Validate input before calling the signup API
+    if (!username || !email || !password) {
+      setErrorMessages({
+        usernameMsg: username ? "" : "Username is required",
+        emailMsg: email ? "" : "Email is required",
+        passwordMsg: password ? "" : "Password is required",
       });
+      return;
+    }
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setShowToast(true); // Show the toast on success
+    try {
+      const data = await signup(username, email, password);
+      if (data.success) {
+        setShowToast(true);
       } else {
-        // Set validation error messages
-        setErrorMessages(data.error);
+        setErrorMessages({
+          usernameMsg: data.error === "Username is required" ? "Username is already taken" : "",
+          emailMsg: data.error === "Email is required" ? "Email already exists" : "",
+          passwordMsg: data.error || "An error occurred during signup",
+        });
       }
     } catch (error) {
       console.error("Error during signup:", error);
+      setErrorMessages({ passwordMsg: "An unexpected error occurred" });
     }
   };
 
