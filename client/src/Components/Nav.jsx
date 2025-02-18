@@ -4,7 +4,7 @@ const Nav = () => {
   return (
     <nav className='w-full pt-3 px-3 flex items-center justify-between relative'>
       <div className="flex flex-row gap-2 items-center">
-        <img src="/Tejas_logo.png" alt="Tejas Networks Logo" className='h-14'/>
+       <a href='https://www.tejasnetworks.com/'> <img src="/Tejas_logo.png" alt="Tejas Networks Logo" className='h-14'/></a>
         <h1 className='text-2xl font-bold text-slate-300'>Tejas Networks</h1>
       </div>
       <h2 className='text-slate-200 font-semibold text-3xl absolute left-1/2 transform -translate-x-1/2 top-6'

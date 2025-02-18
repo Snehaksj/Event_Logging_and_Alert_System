@@ -15,7 +15,7 @@ import {
 Chart.register(LineElement, CategoryScale, LinearScale, PointElement, Title, Legend, Tooltip, Filler);
 
 const TrafficGraph = () => {
-  const [trafficData, setTrafficData] = useState([100, 300, 200, 300, 250, 400, 350]);
+  const [trafficData, setTrafficData] = useState([100, 300, 200, 300, 250, 310, 330]);
 
   useEffect(() => {
     const eventSource = new EventSource("http://localhost:3000/api/live-traffic");
@@ -29,7 +29,7 @@ const TrafficGraph = () => {
   }, []);
 
   return (
-    <div className="bottom flex justify-center items-center h-[450px] w-full">
+    <div className="bottom flex justify-center items-center h-[500px] w-full">
       <div className="w-full h-full bg-[#0A192F] p-3 rounded-xl shadow-lg">
         <Line
           data={{
@@ -64,7 +64,7 @@ const TrafficGraph = () => {
               datalabels: {
                 anchor: "end",
                 align: "top",
-                color: "#FFF",
+                color: "white",
                 font: {
                   weight: "bold",
                 },
@@ -95,6 +95,8 @@ const TrafficGraph = () => {
                 grid: { color: "rgba(255, 255, 255, 0.2)" },
                 ticks: { color: "#FFFFFF" },
                 beginAtZero: true,
+                suggestedMin: 0,
+                suggestedMax: 400,
               },
             },
           }}

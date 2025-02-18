@@ -66,7 +66,7 @@ const Latency = () => {
               title: {
                 display: true,
                 text: "LATENCY",
-                font: { size: 18 },
+                font: { size: 20 },
                 color: "#FFF",
               },
 
