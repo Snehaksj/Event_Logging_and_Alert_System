@@ -1,5 +1,5 @@
 package com.example.alertsystem.Kafka.controller;
-
+import com.example.alertsystem.Kafka.entity.Role;
 import com.example.alertsystem.Kafka.entity.User;
 import com.example.alertsystem.Kafka.service.UserService;
 import com.example.alertsystem.Kafka.dto.RegisterRequest;

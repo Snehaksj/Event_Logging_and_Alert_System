@@ -1,3 +1,13 @@
+package com.example.alertsystem.Kafka.controller;
+
+import com.example.alertsystem.Kafka.dto.AlarmRequest;
+import com.example.alertsystem.Kafka.entity.Alarm;
+import com.example.alertsystem.Kafka.service.AlarmService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/alarms")
 public class AlarmController {
@@ -8,7 +18,7 @@ public class AlarmController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createAlarm(@RequestBody AlarmRequest request) {
+    public ResponseEntity<Alarm> createAlarm(@RequestBody AlarmRequest request) {
         Alarm alarm = alarmService.createAlarm(request.getDeviceId(), request.getCriticality(), request.getMessage());
         return ResponseEntity.ok(alarm);
     }
@@ -19,7 +29,8 @@ public class AlarmController {
     }
 
     @PutMapping("/{alarmId}/resolve")
-    public ResponseEntity<?> resolveAlarm(@PathVariable Long alarmId) {
-        return ResponseEntity.ok(alarmService.resolveAlarm(alarmId));
+    public ResponseEntity<Alarm> resolveAlarm(@PathVariable Long alarmId) {
+        Alarm resolvedAlarm = alarmService.resolveAlarm(alarmId);
+        return ResponseEntity.ok(resolvedAlarm);
     }
 }
