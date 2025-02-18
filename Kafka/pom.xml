@@ -72,7 +72,11 @@
 			<artifactId>spring-kafka-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>com.twilio.sdk</groupId>
+			<artifactId>twilio</artifactId>
+			<version>8.24.0</version> <!-- Choose the version that fits your project -->
+		</dependency>
 		<!-- JetBrains Annotations (Updated Version) -->
 		<dependency>
 			<groupId>org.jetbrains</groupId>
