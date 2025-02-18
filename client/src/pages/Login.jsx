@@ -22,11 +22,20 @@ const LoginPage = () => {
     e.preventDefault();
     setErrorMessages({ usernameOrEmailMsg: "", passwordMsg: "" });
 
+    // Validate input
+    if (!usernameOrEmail || !password) {
+      setErrorMessages({
+        usernameOrEmailMsg: usernameOrEmail ? "" : "Username/Email is required",
+        passwordMsg: password ? "" : "Password is required",
+      });
+      return;
+    }
+
     try {
       const data = await login(usernameOrEmail, password);
 
       if (data.success) {
-        navigate("/home");
+        navigate("/home"); // Redirect to home page after successful login
       } else {
         setErrorMessages({
           usernameOrEmailMsg: data.error.usernameOrEmailMsg || "",
@@ -35,11 +44,12 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.error("Login failed:", error);
+      setErrorMessages({ passwordMsg: "An unexpected error occurred" });
     }
   };
 
   const handleBacktoHome = () => {
-    navigate("/");
+    navigate("/"); // Navigate back to home page
   };
 
   return (
@@ -54,7 +64,7 @@ const LoginPage = () => {
         <div
           className="bg-black bg-opacity-60 p-10 rounded-xl flex flex-col gap-5 max-w-md w-full mx-4"
           style={{
-            filter: "drop-shadow(0 0 70px rgb(101, 47, 231) )",
+            filter: "drop-shadow(0 0 70px rgb(101, 47, 231))",
           }}
         >
           <h3 className="text-3xl text-slate-100 font-medium text-center p-5 max-md:text-2xl max-md:p-2">

@@ -7,46 +7,41 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = () => {
-    setIsAuthenticated(true); // Update the state to indicate user is logged in
-  };
-
-  const logout = () => {
-    setIsAuthenticated(false); // Update the state to indicate user is logged out
-  };
-
-  const signup = async (username, email, password) => {
+  const login = async (usernameOrEmail, password) => {
     try {
-      const response = await fetch("http://your-backend-url.com/auth/register", {
+      const response = await fetch("http://your-backend-url.com/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username,
-          email,
+          usernameOrEmail,
           password,
-          isAdmin: false, // Set this based on your needs
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Success - return a success response
+        // Success - save user session (could be token, etc.) and return success
+        setIsAuthenticated(true); // Set authenticated status
         return { success: true };
       } else {
         // If there was an error, return the error messages
-        return { success: false, error: data.error || "An error occurred" };
+        return { success: false, error: data.error || "Login failed" };
       }
     } catch (error) {
-      console.error("Error during signup:", error);
+      console.error("Login failed:", error);
       return { success: false, error: "Network error" };
     }
   };
 
+  const logout = () => {
+    setIsAuthenticated(false); // Update the state to indicate user is logged out
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, signup }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
