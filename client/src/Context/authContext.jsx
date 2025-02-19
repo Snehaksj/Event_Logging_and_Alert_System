@@ -6,28 +6,28 @@ const AuthContext = createContext();
 // Create a provider component
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const login = async (usernameOrEmail, password) => {
+  const isAdmin = false;
+  // Login method
+  const login = async (username, password) => {
     try {
-      const response = await fetch("http://your-backend-url.com/auth/login", {
+      const response = await fetch("http://localhost:8080/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          usernameOrEmail,
+          username,
           password,
+          isAdmin
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Success - save user session (could be token, etc.) and return success
         setIsAuthenticated(true); // Set authenticated status
         return { success: true };
       } else {
-        // If there was an error, return the error messages
         return { success: false, error: data.error || "Login failed" };
       }
     } catch (error) {
@@ -36,8 +36,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Logout method
   const logout = () => {
-    setIsAuthenticated(false); // Update the state to indicate user is logged out
+    setIsAuthenticated(false); // Update the state to indicate the user is logged out
   };
 
   return (

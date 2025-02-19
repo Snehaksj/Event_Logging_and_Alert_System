@@ -3,10 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/authContext"; // Import the Auth context
 
 const LoginPage = () => {
-  const [usernameOrEmail, setUsernameOrEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessages, setErrorMessages] = useState({
-    usernameOrEmailMsg: "",
+    usernameMsg: "",
     passwordMsg: "",
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -20,25 +20,25 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setErrorMessages({ usernameOrEmailMsg: "", passwordMsg: "" });
+    setErrorMessages({ usernameMsg: "", passwordMsg: "" });
 
     // Validate input
-    if (!usernameOrEmail || !password) {
+    if (!username|| !password) {
       setErrorMessages({
-        usernameOrEmailMsg: usernameOrEmail ? "" : "Username/Email is required",
+        usernameMsg: username ? "" : "Username is required",
         passwordMsg: password ? "" : "Password is required",
       });
       return;
     }
 
     try {
-      const data = await login(usernameOrEmail, password);
+      const data = await login(username, password);
 
       if (data.success) {
-        navigate("/home"); // Redirect to home page after successful login
+        navigate("/dashboard"); // Redirect to home page after successful login
       } else {
         setErrorMessages({
-          usernameOrEmailMsg: data.error.usernameOrEmailMsg || "",
+          usernameMsg: data.error.usernameMsg || "",
           passwordMsg: data.error.passwordMsg || "",
         });
       }
@@ -48,18 +48,10 @@ const LoginPage = () => {
     }
   };
 
-  const handleBacktoHome = () => {
-    navigate("/"); // Navigate back to home page
-  };
 
   return (
     <div className="bg-black h-[100vh] w-full flex flex-col overflow-hidden bg-cover bg-no-repeat">
-      <p
-        className="text-l text-gray-200 m-4 hover:text-[#ff00cc] cursor-pointer w-32 fixed top-3 left-2"
-        onClick={handleBacktoHome}
-      >
-        &larr; Back to home
-      </p>
+      
       <div className="flex h-full justify-center items-center">
         <div
           className="bg-black bg-opacity-60 p-10 rounded-xl flex flex-col gap-5 max-w-md w-full mx-4"
@@ -75,16 +67,16 @@ const LoginPage = () => {
             onSubmit={handleLogin}
           >
             <label className="text-slate-100">
-              Username/Email
+              Username
               <input
                 type="text"
                 className="mt-1 p-2 border border-slate-400 bg-black opacity-55 rounded-md w-full"
-                value={usernameOrEmail}
-                onChange={(e) => setUsernameOrEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </label>
-            {errorMessages.usernameOrEmailMsg && (
-              <p className="text-red-500">{errorMessages.usernameOrEmailMsg}</p>
+            {errorMessages.usernameMsg && (
+              <p className="text-red-500">{errorMessages.usernameMsg}</p>
             )}
             <label className="text-slate-100 relative">
               Password
@@ -116,12 +108,7 @@ const LoginPage = () => {
               Submit
             </button>
           </form>
-          <p className="text-slate-300 text-center text-sm">
-            Don’t have an account?&nbsp;
-            <Link to="/signup" className="text-[#ff00cc]">
-              Sign up
-            </Link>
-          </p>
+          
         </div>
       </div>
     </div>
