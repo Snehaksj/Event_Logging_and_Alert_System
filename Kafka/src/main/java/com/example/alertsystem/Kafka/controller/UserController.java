@@ -1,4 +1,5 @@
 package com.example.alertsystem.Kafka.controller;
+
 import com.example.alertsystem.Kafka.entity.Role;
 import com.example.alertsystem.Kafka.entity.User;
 import com.example.alertsystem.Kafka.service.UserService;
@@ -24,7 +25,9 @@ public class UserController {
         if (admin.getRole() != Role.ADMIN) {
             return ResponseEntity.status(403).body("Unauthorized");
         }
-        return ResponseEntity.ok(userService.createUser(request));
+
+        User newUser = userService.createUser(request.getUsername(), request.getPassword(), request.isAdmin());
+        return ResponseEntity.ok(newUser);
     }
 
     @DeleteMapping("/{userId}")

@@ -1,16 +1,9 @@
 package com.example.alertsystem.Kafka.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
 public class Alarm {
 
     @Id
@@ -35,6 +28,51 @@ public class Alarm {
         this.criticality = criticality;
         this.message = message;
         this.resolved = resolved;
+        this.timestamp = timestamp;
+    }
+
+    // ✅ Explicit Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public Device getDevice() {
+        return device;
+    }
+
+    public void setDevice(Device device) {
+        this.device = device;
+    }
+
+    public String getCriticality() {
+        return criticality;
+    }
+
+    public void setCriticality(String criticality) {
+        this.criticality = criticality;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public boolean isResolved() {
+        return resolved;
+    }
+
+    public void setResolved(boolean resolved) {
+        this.resolved = resolved;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 }

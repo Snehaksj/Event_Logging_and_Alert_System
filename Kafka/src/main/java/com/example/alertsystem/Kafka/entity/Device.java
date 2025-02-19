@@ -1,27 +1,52 @@
 package com.example.alertsystem.Kafka.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
+@Table(name = "devices")
 public class Device {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @ElementCollection
     private List<String> configuration;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    public Device() {}
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<String> getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(List<String> configuration) {
+        this.configuration = configuration;
+    }
 }

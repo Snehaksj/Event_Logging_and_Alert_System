@@ -1,11 +1,14 @@
 package com.example.alertsystem.Kafka.service;
-import com.example.alertsystem.Kafka.entity.Role;
+
+import com.example.alertsystem.Kafka.dto.DeviceRequest;
+import com.example.alertsystem.Kafka.dto.DeviceUpdateRequest;
 import com.example.alertsystem.Kafka.entity.Device;
 import com.example.alertsystem.Kafka.entity.User;
 import com.example.alertsystem.Kafka.repository.DeviceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DeviceService {
@@ -15,11 +18,10 @@ public class DeviceService {
         this.deviceRepository = deviceRepository;
     }
 
-    public Device createDevice(Long userId, String deviceName) {
+    public Device createDevice(User user, DeviceRequest request) {
         Device device = new Device();
-        device.setName(deviceName);
-        device.setUser(new User());
-        device.getUser().setId(userId);
+        device.setName(request.getDeviceName());
+        device.setUser(user);
         return deviceRepository.save(device);
     }
 
@@ -27,26 +29,32 @@ public class DeviceService {
         return deviceRepository.findByUserId(userId);
     }
 
-    public Device updateDevice(Long deviceId, List<String> configuration, User loggedInUser) {
-        Device device = deviceRepository.findById(deviceId)
-                .orElseThrow(() -> new RuntimeException("Device not found"));
-
-        if (!device.getUser().getId().equals(loggedInUser.getId())) {
-            throw new RuntimeException("Unauthorized to update this device");
+    public Device updateDevice(Long deviceId, DeviceUpdateRequest request, User user) {
+        Optional<Device> optionalDevice = deviceRepository.findById(deviceId);
+        if (optionalDevice.isPresent()) {
+            Device device = optionalDevice.get();
+            if (device.getUser().getId().equals(user.getId())) {
+                device.setConfiguration(request.getConfiguration());
+                return deviceRepository.save(device);
+            } else {
+                throw new RuntimeException("Unauthorized to update this device.");
+            }
+        } else {
+            throw new RuntimeException("Device not found.");
         }
-
-        device.setConfiguration(configuration);
-        return deviceRepository.save(device);
     }
 
-    public void deleteDevice(Long deviceId, User loggedInUser) {
-        Device device = deviceRepository.findById(deviceId)
-                .orElseThrow(() -> new RuntimeException("Device not found"));
-
-        if (loggedInUser.getRole() == Role.ADMIN || device.getUser().getId().equals(loggedInUser.getId())) {
-            deviceRepository.delete(device);
+    public void deleteDevice(Long deviceId, User user) {
+        Optional<Device> optionalDevice = deviceRepository.findById(deviceId);
+        if (optionalDevice.isPresent()) {
+            Device device = optionalDevice.get();
+            if (device.getUser().getId().equals(user.getId())) {
+                deviceRepository.delete(device);
+            } else {
+                throw new RuntimeException("Unauthorized to delete this device.");
+            }
         } else {
-            throw new RuntimeException("Unauthorized to delete this device");
+            throw new RuntimeException("Device not found.");
         }
     }
 }

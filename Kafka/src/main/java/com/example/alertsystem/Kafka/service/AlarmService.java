@@ -1,8 +1,7 @@
 package com.example.alertsystem.Kafka.service;
-import com.example.alertsystem.Kafka.dto.AlarmRequest;
+
 import com.example.alertsystem.Kafka.entity.Alarm;
 import com.example.alertsystem.Kafka.entity.Device;
-import com.example.alertsystem.Kafka.service.AlarmService;
 import com.example.alertsystem.Kafka.repository.AlarmRepository;
 import com.example.alertsystem.Kafka.repository.DeviceRepository;
 import org.springframework.stereotype.Service;
@@ -44,4 +43,8 @@ public class AlarmService {
         alarm.setResolved(true);
         return alarmRepository.save(alarm);
     }
+    public List<Device> getDevicesByUser(Long userId) {
+        return deviceRepository.findByUserId(userId);
+    }
+
 }

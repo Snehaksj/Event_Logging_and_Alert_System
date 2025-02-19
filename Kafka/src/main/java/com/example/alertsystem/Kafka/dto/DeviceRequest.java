@@ -1,10 +1,13 @@
 package com.example.alertsystem.Kafka.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
 public class DeviceRequest {
     private String deviceName;
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
 }
