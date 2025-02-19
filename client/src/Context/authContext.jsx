@@ -6,7 +6,7 @@ const AuthContext = createContext();
 // Create a provider component
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const isAdmin = false;
+
   // Login method
   const login = async (username, password) => {
     try {
@@ -18,17 +18,15 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({
           username,
           password,
-          isAdmin
         }),
       });
 
       const data = await response.json();
-
       if (response.ok) {
         setIsAuthenticated(true); // Set authenticated status
         return { success: true };
       } else {
-        return { success: false, error: data.error || "Login failed" };
+        return { success: false, error: data.message || "Login failed" };
       }
     } catch (error) {
       console.error("Login failed:", error);
