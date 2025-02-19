@@ -1,14 +1,16 @@
 package com.example.alertsystem.Kafka.controller;
 
+import com.example.alertsystem.Kafka.dto.DeviceRequest;
+import com.example.alertsystem.Kafka.dto.DeviceUpdateRequest;
 import com.example.alertsystem.Kafka.entity.Device;
 import com.example.alertsystem.Kafka.entity.User;
 import com.example.alertsystem.Kafka.service.DeviceService;
 import com.example.alertsystem.Kafka.service.UserService;
-import com.example.alertsystem.Kafka.dto.DeviceRequest;
-import com.example.alertsystem.Kafka.dto.DeviceUpdateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/devices")
@@ -22,14 +24,20 @@ public class DeviceController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createDevice(@RequestBody DeviceRequest request, Authentication authentication) {
+    public ResponseEntity<Device> createDevice(@RequestBody DeviceRequest request, Authentication authentication) {
         User user = userService.getUserByUsername(authentication.getName());
         Device device = deviceService.createDevice(user.getId(), request.getDeviceName());
         return ResponseEntity.ok(device);
     }
 
+    @GetMapping("/my")
+    public ResponseEntity<List<Device>> getUserDevices(Authentication authentication) {
+        User user = userService.getUserByUsername(authentication.getName());
+        return ResponseEntity.ok(deviceService.getDevicesByUser(user.getId()));
+    }
+
     @PutMapping("/{deviceId}")
-    public ResponseEntity<?> updateDevice(@PathVariable Long deviceId, @RequestBody DeviceUpdateRequest request, Authentication authentication) {
+    public ResponseEntity<Device> updateDevice(@PathVariable Long deviceId, @RequestBody DeviceUpdateRequest request, Authentication authentication) {
         User user = userService.getUserByUsername(authentication.getName());
         Device updatedDevice = deviceService.updateDevice(deviceId, request.getConfiguration(), user);
         return ResponseEntity.ok(updatedDevice);

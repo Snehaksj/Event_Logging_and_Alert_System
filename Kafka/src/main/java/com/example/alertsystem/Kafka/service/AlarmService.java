@@ -1,5 +1,4 @@
 package com.example.alertsystem.Kafka.service;
-
 import com.example.alertsystem.Kafka.dto.AlarmRequest;
 import com.example.alertsystem.Kafka.entity.Alarm;
 import com.example.alertsystem.Kafka.entity.Device;
