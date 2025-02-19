@@ -1,69 +1,42 @@
 package com.example.alertsystem.Kafka.config;
 
-import com.example.alertsystem.Kafka.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
-
-    private final UserService userService; // Using UserService instead of generic UserDetailsService
-
-    public SecurityConfig(UserService userService) {
-        this.userService = userService;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disabling CSRF for testing (enable in production)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()  // Allow authentication APIs
-                        .requestMatchers("/admin/**").hasRole("ADMIN")  // Restrict admin routes
-                        .anyRequest().authenticated() // Require authentication for all other endpoints
-                )
-                .formLogin(login -> login
-                        .loginPage("/auth/login") // Custom login endpoint
-                        .defaultSuccessUrl("/dashboard", true) // Redirect after login
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout"))
-                        .logoutSuccessUrl("/auth/login?logout=true")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
-                )
-                .sessionManagement(session -> session
-                        .maximumSessions(1) // Limit to 1 session per user
-                        .expiredUrl("/auth/login?expired=true")
+                        .requestMatchers("/auth/**").permitAll() // Allow authentication APIs
+                        .anyRequest().authenticated()
                 );
 
         return http.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return userService; // Ensuring Spring Security uses our UserService
-    }
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:5173")); // Adjust if needed
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowCredentials(true);
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+        return source;
     }
 }

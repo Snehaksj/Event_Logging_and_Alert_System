@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (usernameOrEmail, password) => {
     try {
-      const response = await fetch("http://your-backend-url.com/auth/login", {
+      const response = await fetch("http://localhost:8080/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
