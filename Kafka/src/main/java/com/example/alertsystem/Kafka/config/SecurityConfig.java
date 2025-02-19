@@ -1,5 +1,6 @@
 package com.example.alertsystem.Kafka.config;
 
+import com.example.alertsystem.Kafka.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,31 +11,37 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final UserDetailsService userDetailsService;
+    private final UserService userService; // Using UserService instead of generic UserDetailsService
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public SecurityConfig(UserService userService) {
+        this.userService = userService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable()) // Disabling CSRF for testing (enable in production)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()  // Allow authentication APIs
                         .requestMatchers("/admin/**").hasRole("ADMIN")  // Restrict admin routes
-                        .anyRequest().authenticated() // Require authentication for other endpoints
+                        .anyRequest().authenticated() // Require authentication for all other endpoints
                 )
-                .formLogin(login -> login  // Enable form-based login
+                .formLogin(login -> login
                         .loginPage("/auth/login") // Custom login endpoint
+                        .defaultSuccessUrl("/dashboard", true) // Redirect after login
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/auth/logout")
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout"))
+                        .logoutSuccessUrl("/auth/login?logout=true")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
                 .sessionManagement(session -> session
@@ -43,6 +50,11 @@ public class SecurityConfig {
                 );
 
         return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return userService; // Ensuring Spring Security uses our UserService
     }
 
     @Bean

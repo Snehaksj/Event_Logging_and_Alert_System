@@ -26,7 +26,7 @@ public class DeviceController {
     @PostMapping("/create")
     public ResponseEntity<Device> createDevice(@RequestBody DeviceRequest request, Authentication authentication) {
         User user = userService.getUserByUsername(authentication.getName());
-        Device device = deviceService.createDevice(user.getId(), request.getDeviceName());
+        Device device = deviceService.createDevice(user, request);
         return ResponseEntity.ok(device);
     }
 
@@ -39,7 +39,7 @@ public class DeviceController {
     @PutMapping("/{deviceId}")
     public ResponseEntity<Device> updateDevice(@PathVariable Long deviceId, @RequestBody DeviceUpdateRequest request, Authentication authentication) {
         User user = userService.getUserByUsername(authentication.getName());
-        Device updatedDevice = deviceService.updateDevice(deviceId, request.getConfiguration(), user);
+        Device updatedDevice = deviceService.updateDevice(deviceId, request, user);
         return ResponseEntity.ok(updatedDevice);
     }
 
