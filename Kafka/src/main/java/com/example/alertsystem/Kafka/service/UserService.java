@@ -1,7 +1,7 @@
 package com.example.alertsystem.Kafka.service;
 
-import com.example.alertsystem.Kafka.dto.RegisterRequest;
 import com.example.alertsystem.Kafka.dto.LoginRequest;
+import com.example.alertsystem.Kafka.dto.RegisterRequest;
 import com.example.alertsystem.Kafka.entity.Role;
 import com.example.alertsystem.Kafka.entity.User;
 import com.example.alertsystem.Kafka.repository.UserRepository;

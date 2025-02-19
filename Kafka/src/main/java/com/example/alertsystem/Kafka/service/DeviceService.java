@@ -1,7 +1,6 @@
 package com.example.alertsystem.Kafka.service;
-
-import com.example.alertsystem.Kafka.entity.Device;
 import com.example.alertsystem.Kafka.entity.Role;
+import com.example.alertsystem.Kafka.entity.Device;
 import com.example.alertsystem.Kafka.entity.User;
 import com.example.alertsystem.Kafka.repository.DeviceRepository;
 import org.springframework.stereotype.Service;
@@ -16,42 +15,38 @@ public class DeviceService {
         this.deviceRepository = deviceRepository;
     }
 
-    public void deleteDevice(Long deviceId, User user) {
-        Device device = deviceRepository.findById(deviceId)
-                .orElseThrow(() -> new RuntimeException("Device not found"));
-
-        // Check if the device belongs to the user before deleting (optional)
-        if (!device.getUser().getId().equals(user.getId())) { // Corrected from getUserId() to getUser().getId()
-            throw new RuntimeException("User not authorized to delete this device");
-        }
-
-        deviceRepository.delete(device);
-    }
-
     public Device createDevice(Long userId, String deviceName) {
-        // Assuming you have a Device entity with userId and deviceName fields
         Device device = new Device();
-        // You no longer need to set userId directly since you have the User relationship in Device
-        User user = new User();
-        user.setId(userId); // Assuming User exists with this id
-        device.setUser(user);  // Set the user directly
-
-        device.setName(deviceName); // Updated method to set name
-
-        // Save the device to the repository
+        device.setName(deviceName);
+        device.setUser(new User());
+        device.getUser().setId(userId);
         return deviceRepository.save(device);
     }
 
-    public Device updateDevice(Long deviceId, List<String> configuration, User user) {
+    public List<Device> getDevicesByUser(Long userId) {
+        return deviceRepository.findByUserId(userId);
+    }
+
+    public Device updateDevice(Long deviceId, List<String> configuration, User loggedInUser) {
         Device device = deviceRepository.findById(deviceId)
                 .orElseThrow(() -> new RuntimeException("Device not found"));
 
-        // Ensure only the owner or admin can update the device
-        if (!device.getUser().getId().equals(user.getId()) && user.getRole() != Role.ADMIN) {
+        if (!device.getUser().getId().equals(loggedInUser.getId())) {
             throw new RuntimeException("Unauthorized to update this device");
         }
 
-        device.setConfiguration(configuration); // Update the configuration
+        device.setConfiguration(configuration);
         return deviceRepository.save(device);
+    }
+
+    public void deleteDevice(Long deviceId, User loggedInUser) {
+        Device device = deviceRepository.findById(deviceId)
+                .orElseThrow(() -> new RuntimeException("Device not found"));
+
+        if (loggedInUser.getRole() == Role.ADMIN || device.getUser().getId().equals(loggedInUser.getId())) {
+            deviceRepository.delete(device);
+        } else {
+            throw new RuntimeException("Unauthorized to delete this device");
+        }
     }
 }
