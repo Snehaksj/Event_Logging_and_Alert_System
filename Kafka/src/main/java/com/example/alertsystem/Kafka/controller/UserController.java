@@ -48,4 +48,10 @@ public class UserController {
         }
         return ResponseEntity.ok(userService.getAllUsers());
     }
+
+    @PostMapping("/create-bulk")
+    public ResponseEntity<String> createUsersBulk(@RequestBody List<User> users) {
+        userService.saveAll(users);
+        return ResponseEntity.ok("Users created successfully");
+    }
 }
