@@ -41,7 +41,6 @@ public class AuthController {
             User user = userService.getUserByUsername(request.getUsername());
             response.put("message","Login successfull");
             response.put("status","success");
-            response.put("ok","true");
             response.put("role",user.getRole().name());
             return ResponseEntity.ok(response);
         } else {
