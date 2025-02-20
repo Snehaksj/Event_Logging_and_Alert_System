@@ -19,6 +19,11 @@ public class UserService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    public void saveAll(List<User> users) {
+        userRepository.saveAll(users);
+    }
+
+
     public User createUser(String username, String password, boolean isAdmin) {
         User user = new User();
         user.setUsername(username);
