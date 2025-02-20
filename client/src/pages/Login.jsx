@@ -34,7 +34,7 @@ const LoginPage = () => {
 
     try {
       const data = await login(username, password);
-
+      
       if (data.success) {
         navigate("/dashboard"); // Redirect to home page after successful login
       } else {
