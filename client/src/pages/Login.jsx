@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/authContext"; // Import the Auth context
 
 const LoginPage = () => {
@@ -8,11 +8,12 @@ const LoginPage = () => {
   const [errorMessages, setErrorMessages] = useState({
     usernameMsg: "",
     passwordMsg: "",
+    generalMsg: "", // Added for general error messages
   });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const { login } = useAuth(); // Destructure login from auth context
+  const { login, isAuthenticated } = useAuth(); // Destructure login and isAuthenticated from auth context
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
@@ -20,10 +21,10 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setErrorMessages({ usernameMsg: "", passwordMsg: "" });
+    setErrorMessages({ usernameMsg: "", passwordMsg: "", generalMsg: "" });
 
     // Validate input
-    if (!username|| !password) {
+    if (!username || !password) {
       setErrorMessages({
         usernameMsg: username ? "" : "Username is required",
         passwordMsg: password ? "" : "Password is required",
@@ -38,20 +39,17 @@ const LoginPage = () => {
         navigate("/dashboard"); // Redirect to home page after successful login
       } else {
         setErrorMessages({
-          usernameMsg: data.error.usernameMsg || "",
-          passwordMsg: data.error.passwordMsg || "",
+          generalMsg: data.error || "Login failed", // Set the general error message
         });
       }
     } catch (error) {
       console.error("Login failed:", error);
-      setErrorMessages({ passwordMsg: "An unexpected error occurred" });
+      setErrorMessages({ generalMsg: "An unexpected error occurred" });
     }
   };
 
-
   return (
     <div className="bg-black h-[100vh] w-full flex flex-col overflow-hidden bg-cover bg-no-repeat">
-      
       <div className="flex h-full justify-center items-center">
         <div
           className="bg-black bg-opacity-60 p-10 rounded-xl flex flex-col gap-5 max-w-md w-full mx-4"
@@ -101,6 +99,12 @@ const LoginPage = () => {
             {errorMessages.passwordMsg && (
               <p className="text-red-500">{errorMessages.passwordMsg}</p>
             )}
+
+            {/* Display general error message */}
+            {errorMessages.generalMsg && (
+              <p className="text-red-500">{errorMessages.generalMsg}</p>
+            )}
+
             <button
               type="submit"
               className="mt-4 mb-2 mx-auto w-1/2 justify-center items-center text-white p-2 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
@@ -108,7 +112,6 @@ const LoginPage = () => {
               Submit
             </button>
           </form>
-          
         </div>
       </div>
     </div>
