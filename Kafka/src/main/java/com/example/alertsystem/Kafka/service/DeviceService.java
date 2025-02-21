@@ -17,7 +17,9 @@ public class DeviceService {
     public DeviceService(DeviceRepository deviceRepository) {
         this.deviceRepository = deviceRepository;
     }
-
+    public void saveAll(List<Device> devices) {
+        deviceRepository.saveAll(devices);
+    }
     public Device createDevice(User user, DeviceRequest request) {
         Device device = new Device();
         device.setName(request.getDeviceName());
