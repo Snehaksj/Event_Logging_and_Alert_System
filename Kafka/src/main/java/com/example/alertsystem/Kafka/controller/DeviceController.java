@@ -6,11 +6,15 @@ import com.example.alertsystem.Kafka.entity.Device;
 import com.example.alertsystem.Kafka.entity.User;
 import com.example.alertsystem.Kafka.service.DeviceService;
 import com.example.alertsystem.Kafka.service.UserService;
+import org.apache.kafka.common.protocol.types.Field;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/devices")
@@ -23,11 +27,23 @@ public class DeviceController {
         this.userService = userService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Device> createDevice(@RequestBody DeviceRequest request, Authentication authentication) {
-        User user = userService.getUserByUsername(authentication.getName());
-        Device device = deviceService.createDevice(user, request);
-        return ResponseEntity.ok(device);
+    @PostMapping("/create/{username}/{deviceName}")
+    public ResponseEntity<Map<String, String>> createDevice(@RequestBody DeviceRequest request, @PathVariable String username, @PathVariable String deviceName) {
+        Map<String, String> response = new HashMap<>();
+        try{
+            User user = userService.getUserByUsername(username);
+
+                Device device = deviceService.createDevice(user, deviceName, request);
+                response.put("message", "Device created successfully");
+                response.put("status", "success");
+
+            return ResponseEntity.ok(response);
+        }
+        catch(Exception e){
+
+            response.put("message","username not found");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
     }
 
     @GetMapping("/my")

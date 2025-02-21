@@ -35,18 +35,22 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    public void editUser(String username, String password) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        String encodedPassword = passwordEncoder.encode(password);
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+    }
+
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public boolean authenticateUser(String username, String password) {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-        return userOptional.map(user -> user.getPassword().equals(password)).orElse(false);
-    }
 
-    public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
+    public void deleteUser(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.deleteById(user.getId());
     }
 
     public List<User> getAllUsers() {

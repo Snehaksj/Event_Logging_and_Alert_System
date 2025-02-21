@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -28,10 +29,12 @@ public class AuthController {
     private UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.userRepository=userRepository;
+        this.passwordEncoder=passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
 
@@ -61,27 +64,42 @@ public class AuthController {
 
         // Authenticate user
         try {
+            // Check if user exists
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("Username does not exist"));
+
+            // Check if password matches
+            if (!passwordEncoder.matches(password, user.getPassword())) {
+                throw new RuntimeException("Invalid password");
+            }
+
+            // Perform authentication
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
 
-            Optional<User> userdetails = Optional.ofNullable(userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found")));
+            // Generate token
             String token = jwtUtil.generateToken(username);
+
+            // Prepare response
             Map<String, String> response = new HashMap<>();
             response.put("message", "Login successful");
             response.put("status", "success");
             response.put("role", authentication.getAuthorities().toString());
             response.put("username", username);
-            response.put("token",token);
+            response.put("token", token);
 
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+
+        } catch (RuntimeException e) {
+            // Handle errors and provide specific error message
             Map<String, String> response = new HashMap<>();
-            response.put("message", "Login failed: " + e.getMessage());
+            response.put("message", e.getMessage());
             response.put("status", "error");
 
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
     }
+
 
 }
