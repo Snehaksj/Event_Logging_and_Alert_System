@@ -55,6 +55,10 @@ public class DeviceService {
     public List<Device> getDevicesByUser(Long userId) {
         return deviceRepository.findByUserId(userId);
     }
+    public Device getDeviceByUserAndName(Long userId, String deviceName) {
+        return deviceRepository.findByUserIdAndName(userId, deviceName)
+                .orElseThrow(() -> new RuntimeException("Device not found"));
+    }
 
     public void deleteDevice(Long userId, String deviceName) {
         Optional<Device> optionalDevice = deviceRepository.findByUserIdAndName(userId, deviceName);

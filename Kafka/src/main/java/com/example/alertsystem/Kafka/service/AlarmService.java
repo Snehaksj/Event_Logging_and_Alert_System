@@ -19,32 +19,33 @@ public class AlarmService {
         this.deviceRepository = deviceRepository;
     }
 
-    public Alarm createAlarm(Long deviceId, String criticality, String message) {
-        Device device = deviceRepository.findById(deviceId)
-                .orElseThrow(() -> new RuntimeException("Device not found"));
-
+    public Alarm createAlarm(Device device, String criticality, String message) {
         Alarm alarm = new Alarm();
         alarm.setDevice(device);
         alarm.setCriticality(criticality);
         alarm.setMessage(message);
-        alarm.setResolved(false); // Default to unresolved
+        alarm.setResolved(false);
         alarm.setTimestamp(LocalDateTime.now());
 
         return alarmRepository.save(alarm);
     }
 
+
+
+
     public List<Alarm> getAlarmsByDevice(Long deviceId) {
         return alarmRepository.findByDeviceId(deviceId);
     }
 
-    public Alarm resolveAlarm(Long alarmId) {
-        Alarm alarm = alarmRepository.findById(alarmId)
+    public Alarm resolveAlarm(String message, Long deviceId) {
+        Alarm alarm = alarmRepository.findByMessage(message)
                 .orElseThrow(() -> new RuntimeException("Alarm not found"));
+
+        if (!alarm.getDevice().getId().equals(deviceId)) {
+            throw new RuntimeException("Alarm does not belong to the given device");
+        }
+
         alarm.setResolved(true);
         return alarmRepository.save(alarm);
     }
-    public List<Device> getDevicesByUser(Long userId) {
-        return deviceRepository.findByUserId(userId);
-    }
-
 }

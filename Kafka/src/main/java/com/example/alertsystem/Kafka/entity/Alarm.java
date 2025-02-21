@@ -15,6 +15,7 @@ public class Alarm {
     private Device device;
 
     private String criticality;
+    @Column(unique = true, nullable = false)
     private String message;
     private boolean resolved;
     private LocalDateTime timestamp;
