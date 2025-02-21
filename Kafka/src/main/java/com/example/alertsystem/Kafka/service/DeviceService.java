@@ -18,7 +18,9 @@ public class DeviceService {
         this.deviceRepository = deviceRepository;
     }
 
+
     public Device createDevice(User user, String deviceName, DeviceRequest request) {
+
         Device device = new Device();
         device.setName(deviceName);
         device.setUser(user);

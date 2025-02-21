@@ -58,7 +58,11 @@ public class DeviceController {
         Device updatedDevice = deviceService.updateDevice(deviceId, request, user);
         return ResponseEntity.ok(updatedDevice);
     }
-
+    @PostMapping("/create-bulk")
+    public ResponseEntity<String> createDevicesBulk(@RequestBody List<Device> devices) {
+        deviceService.saveAll(devices);
+        return ResponseEntity.ok("Devices created successfully");
+    }
     @DeleteMapping("/{deviceId}")
     public ResponseEntity<?> deleteDevice(@PathVariable Long deviceId, Authentication authentication) {
         User user = userService.getUserByUsername(authentication.getName());
