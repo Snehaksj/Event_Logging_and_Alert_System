@@ -34,12 +34,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Map<String,String>> login(@RequestBody LoginRequest request) {
         boolean authenticated = userService.authenticateUser(request.getUsername(), request.getPassword());
+        Map<String, String> response = new HashMap<>();
         if (authenticated) {
-            return ResponseEntity.ok("Login successful");
+            User user = userService.getUserByUsername(request.getUsername());
+            response.put("message","Login successfull");
+            response.put("status","success");
+            response.put("role",user.getRole().name());
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            response.put("message","Login failed. Check username and password");
+            response.put("status","error");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
     }
 }

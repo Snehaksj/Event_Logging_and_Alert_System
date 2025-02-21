@@ -6,7 +6,8 @@ const AuthContext = createContext();
 // Create a provider component
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const isAdmin = false;
+  const [role, setRole] = useState(""); // Store the role in the context
+
   // Login method
   const login = async (username, password) => {
     try {
@@ -18,17 +19,16 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({
           username,
           password,
-          isAdmin
         }),
       });
 
       const data = await response.json();
-
       if (response.ok) {
         setIsAuthenticated(true); // Set authenticated status
+        setRole(data.role); // Store the role from the response
         return { success: true };
       } else {
-        return { success: false, error: data.error || "Login failed" };
+        return { success: false, error: data.message || "Login failed" };
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -39,10 +39,11 @@ export const AuthProvider = ({ children }) => {
   // Logout method
   const logout = () => {
     setIsAuthenticated(false); // Update the state to indicate the user is logged out
+    setRole(""); // Reset the role on logout
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, role, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
