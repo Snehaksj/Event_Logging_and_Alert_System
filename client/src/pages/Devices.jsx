@@ -33,6 +33,8 @@ const Devices = () => {
             <p className="text-white text-lg">Add Multiple Devices</p>
           </div>
 
+          <></>
+
           {/* Card 3: Edit Device */}
           <div
             className="h-[200px] w-[300px] rounded-xl bg-slate-900 flex flex-col items-center justify-center hover:scale-105 hover:bg-slate-700 transition-all duration-300 shadow-lg cursor-pointer"
