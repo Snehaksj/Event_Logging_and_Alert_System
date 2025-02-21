@@ -30,17 +30,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-  
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register", "/email/send").permitAll() // Allow public endpoints
-                        .anyRequest().authenticated()
-                )
-                .logout(logout -> logout.logoutUrl("/auth/logout").permitAll()); // Ensure logout works properly
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
