@@ -6,6 +6,7 @@ import com.example.alertsystem.Kafka.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,15 +15,17 @@ import java.util.Optional;
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder password) {
         this.userRepository = userRepository;
+        this.passwordEncoder = password;
     }
 
     public User createUser(String username, String password, boolean isAdmin) {
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password); // ⚠️ Hash password in production
+        user.setPassword(passwordEncoder.encode(password)); // ⚠️ Hash password in production
         user.setRole(isAdmin ? Role.ADMIN : Role.USER);
         return userRepository.save(user);
     }
@@ -54,5 +57,9 @@ public class UserService implements UserDetailsService {
                 .password(user.getPassword()) // ⚠️ Make sure password is encoded
                 .roles(user.getRole().name())
                 .build();
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 }
