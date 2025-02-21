@@ -35,36 +35,38 @@ public class DeviceService {
         return deviceRepository.save(device);
     }
 
+    public Device updateDevice(Long userId, String deviceName, DeviceRequest request) {
+        List<Device> devices = deviceRepository.findByUserId(userId);
+        Optional<Device> optionalDevice = devices.stream()
+                .filter(device -> device.getName().equals(deviceName))
+                .findFirst();
+
+        if (optionalDevice.isPresent()) {
+            Device device = optionalDevice.get();
+            device.setConfiguration(request.getConfiguration() != null ? request.getConfiguration() : List.of("default-config"));
+            return deviceRepository.save(device);
+        } else {
+            throw new RuntimeException("Device not found for the given user.");
+        }
+    }
+
+
+
     public List<Device> getDevicesByUser(Long userId) {
         return deviceRepository.findByUserId(userId);
     }
 
-    public Device updateDevice(Long deviceId, DeviceUpdateRequest request, User user) {
-        Optional<Device> optionalDevice = deviceRepository.findById(deviceId);
-        if (optionalDevice.isPresent()) {
-            Device device = optionalDevice.get();
-            if (device.getUser().getId().equals(user.getId())) {
-                device.setConfiguration(request.getConfiguration());
-                return deviceRepository.save(device);
-            } else {
-                throw new RuntimeException("Unauthorized to update this device.");
-            }
-        } else {
-            throw new RuntimeException("Device not found.");
+    public void deleteDevice(Long userId, String deviceName) {
+        Optional<Device> optionalDevice = deviceRepository.findByUserIdAndName(userId, deviceName);
+
+        if (optionalDevice.isEmpty()) {
+            throw new RuntimeException("Device not found for the given user.");
         }
+
+        Device device = optionalDevice.get();
+        deviceRepository.delete(device);
     }
 
-    public void deleteDevice(Long deviceId, User user) {
-        Optional<Device> optionalDevice = deviceRepository.findById(deviceId);
-        if (optionalDevice.isPresent()) {
-            Device device = optionalDevice.get();
-            if (device.getUser().getId().equals(user.getId())) {
-                deviceRepository.delete(device);
-            } else {
-                throw new RuntimeException("Unauthorized to delete this device.");
-            }
-        } else {
-            throw new RuntimeException("Device not found.");
-        }
-    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.example.alertsystem.Kafka.entity;
 
+import com.example.alertsystem.Kafka.dto.DeviceRequest;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -50,4 +51,6 @@ public class Device {
     public void setConfiguration(List<String> configuration) {
         this.configuration = configuration;
     }
+
+
 }
