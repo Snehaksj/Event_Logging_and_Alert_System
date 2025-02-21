@@ -11,6 +11,7 @@ public class Device {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name", unique = true)  // Ensure the device name is unique
     private String name;
 
     @ManyToOne

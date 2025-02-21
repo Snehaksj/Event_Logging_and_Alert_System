@@ -18,10 +18,18 @@ public class DeviceService {
         this.deviceRepository = deviceRepository;
     }
 
-    public Device createDevice(User user, DeviceRequest request) {
+    public Device createDevice(User user, String deviceName, DeviceRequest request) {
         Device device = new Device();
-        device.setName(request.getDeviceName());
+        device.setName(deviceName);
         device.setUser(user);
+        if (request.getConfiguration() != null) {
+            device.setConfiguration(request.getConfiguration());
+        } else {
+            // Set default configuration or empty list if no config is provided
+            device.setConfiguration(List.of("default-config"));
+        }
+
+        // Save the device to the repository
         return deviceRepository.save(device);
     }
 
