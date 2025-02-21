@@ -4,7 +4,6 @@ import { useAuth } from "../Context/authContext";
 const Nav = () => {
   const navigate = useNavigate();
  const { logout, role } = useAuth(); 
- console.log(role);
   const handleLogout = () => {
     // Call the logout function passed as prop
     

@@ -7,11 +7,16 @@ import ProtectedRoute from './Components/ProtectedRoute'; // Import ProtectedRou
 import Users from './pages/Users.jsx';
 import Alarms from './pages/Alarms.jsx';
 import Devices from './pages/Devices.jsx';
-import Add from "./Components/Add.jsx";
-import AddMultiple from './Components/AddMultiple.jsx';
-import Edit from './Components/Edit.jsx';
-import Delete from './Components/Delete.jsx';
-import View from './Components/View.jsx';
+import AddUser from "./pages/AddUser.jsx";
+import AddMultipleUser from './pages/AddMultipleUser.jsx';
+import EditUser from './pages/EditUser.jsx';
+import DeleteUser from './pages/DeleteUser.jsx';
+import ViewUser from './pages/ViewUser.jsx';
+import AddDevice from "./pages/AddDevice.jsx";
+import AddMultipleDevice from './pages/AddMultipleDevice.jsx';
+import EditDevice from './pages/EditDevice.jsx';
+import DeleteDevice from './pages/DeleteDevice.jsx';
+import ViewDevice from './pages/ViewDevice.jsx';
 
 
 function App() {
@@ -25,16 +30,16 @@ function App() {
           <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
           <Route path="/devices" element={<ProtectedRoute><Devices /></ProtectedRoute>} />
           <Route path="/alarms" element={<ProtectedRoute><Alarms /></ProtectedRoute>} />
-          <Route path="/users/add" element={<ProtectedRoute><Add type="users"/></ProtectedRoute>} />
-          <Route path="/users/add-multiple" element={<ProtectedRoute><AddMultiple type="users" /></ProtectedRoute>} />
-          <Route path="/users/edit" element={<ProtectedRoute><Edit type="users" /></ProtectedRoute>} />
-          <Route path="/users/delete" element={<ProtectedRoute><Delete type="users" /></ProtectedRoute>} />
-          <Route path="/users/view" element={<ProtectedRoute><View type="users" /></ProtectedRoute>} />
-          <Route path="/devices/add" element={<ProtectedRoute><Add type="devices"/></ProtectedRoute>} />
-          <Route path="/devices/add-multiple" element={<ProtectedRoute><AddMultiple type="devices" /></ProtectedRoute>} />
-          <Route path="/devices/edit" element={<ProtectedRoute><Edit type="devices" /></ProtectedRoute>} />
-          <Route path="/devices/delete" element={<ProtectedRoute><Delete type="devices" /></ProtectedRoute>} />
-          <Route path="/devices/view" element={<ProtectedRoute><View type="devices" /></ProtectedRoute>} />
+          <Route path="/users/add" element={<ProtectedRoute><AddUser /></ProtectedRoute>} />
+          <Route path="/users/add-multiple" element={<ProtectedRoute><AddMultipleUser/></ProtectedRoute>} />
+          <Route path="/users/edit" element={<ProtectedRoute><EditUser/></ProtectedRoute>} />
+          <Route path="/users/delete" element={<ProtectedRoute><DeleteUser/></ProtectedRoute>} />
+          <Route path="/users/view" element={<ProtectedRoute><ViewUser/></ProtectedRoute>} />
+          <Route path="/devices/add" element={<ProtectedRoute><AddDevice/></ProtectedRoute>} />
+          <Route path="/devices/add-multiple" element={<ProtectedRoute><AddMultipleDevice /></ProtectedRoute>} />
+          <Route path="/devices/edit" element={<ProtectedRoute><EditDevice/></ProtectedRoute>} />
+          <Route path="/devices/delete" element={<ProtectedRoute><DeleteDevice/></ProtectedRoute>} />
+          <Route path="/devices/view" element={<ProtectedRoute><ViewDevice/></ProtectedRoute>} />
         </Routes>
       </Router>
     </AuthProvider>
