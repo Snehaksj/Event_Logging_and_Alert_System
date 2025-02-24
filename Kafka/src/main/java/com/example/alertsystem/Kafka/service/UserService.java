@@ -3,14 +3,19 @@ package com.example.alertsystem.Kafka.service;
 import com.example.alertsystem.Kafka.entity.Role;
 import com.example.alertsystem.Kafka.entity.User;
 import com.example.alertsystem.Kafka.repository.UserRepository;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -24,6 +29,49 @@ public class UserService implements UserDetailsService {
 
     public void saveAll(List<User> users) {
         userRepository.saveAll(users);
+    }
+
+    public List<String> saveBulkUsers(MultipartFile file) throws IOException {
+        List<String> errorMessages = new ArrayList<>();
+        List<User> usersToSave = new ArrayList<>();
+        Workbook workbook = new XSSFWorkbook(file.getInputStream());
+        Sheet sheet = workbook.getSheetAt(0);
+
+        // Create a set to store usernames from the Excel file to check for duplicates
+        Set<String> excelUsernames = new HashSet<>();
+
+        // Iterate through rows to extract usernames and passwords
+        for (Row row : sheet) {
+            String username = row.getCell(0).getStringCellValue();  // Assuming username is in the first column
+            String password = row.getCell(1).getStringCellValue();  // Assuming password is in the second column
+
+            // Check if the username is already in the Excel file (to prevent internal duplicates)
+            if (excelUsernames.contains(username)) {
+                errorMessages.add("Duplicate username in the file: " + username);
+                continue;  // Skip this user
+            }
+            excelUsernames.add(username);
+
+            // Check if the username already exists in the database
+            if (existsByUsername(username)) {
+                errorMessages.add("Username already exists in the database: " + username);
+            } else {
+                String encryptedPassword = passwordEncoder.encode(password);  // Encrypt the password
+
+                User user = new User();
+                user.setUsername(username);
+                user.setRole(Role.USER);
+                user.setPassword(encryptedPassword);  // Store the encrypted password
+                usersToSave.add(user);
+            }
+        }
+
+        // If there are no errors, save the users
+        if (errorMessages.isEmpty()) {
+            saveAll(usersToSave);
+        }
+
+        return errorMessages;
     }
 
 
@@ -54,7 +102,14 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        try{
+            return userRepository.findAll();
+        }
+       catch (Exception e){
+            System.out.println(e);
+            List<User> a=new ArrayList();
+           return a;
+       }
     }
 
     @Override

@@ -31,30 +31,31 @@ const DeleteUser = () => {
   
     try {
       // Make an API request to delete the user using axios
-      const response = await axios.delete(`http://localhost:8080/auth/delete/${username}`);
-  
+      const response = await axios.delete("http://localhost:8080/users/delete",{data:{username:username}} // Pass the username as part of the request body
+      );
+      
       // If the response status is 200, it means deletion was successful
       setToastMessage("User deleted successfully");
       setUsername(""); // Reset username field
     } catch (error) {
-      // If an error occurs, check if it's a 400 response (user not found)
+    
+      // Check if error.response exists (i.e., if the server responded with an error)
       if (error.response) {
-        const data = error.response.data;
-  
-        if (data.message === "User not found") {
-          setErrorMessages({ generalMsg: "User not found" });
-          setToastMessage("User not found");
+         // Get the error data from the response
+        console.log(data);
+        
+        if (data.message === "Username does not exist") {
+          setErrorMessages({ generalMsg: "Username does not exist" });
         } else {
           setErrorMessages({ generalMsg: "An error occurred. Please try again." });
-          setToastMessage("An error occurred. Please try again.");
         }
       } else {
-        // In case of network errors or unexpected issues
+        // If no response was received (network error or other issues)
         setErrorMessages({ generalMsg: "An unexpected error occurred." });
-        setToastMessage("An unexpected error occurred.");
       }
     }
   };
+  
 
   return (
     <>
@@ -83,7 +84,7 @@ const DeleteUser = () => {
 
           <button
             type="submit"
-            className="mt-3 mb-2 mx-auto w-1/2 justify-center items-center text-white p-2 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+            className="mt-2 mb-2 mx-auto w-1/2 justify-center items-center text-white p-2 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
           >
             Delete User
           </button>

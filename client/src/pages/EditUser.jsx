@@ -39,7 +39,7 @@ const EditUser = () => {
   
     try {
       // Make an API request to register the user using axios
-      const response = await axios.post("http://localhost:8080/auth/register", {
+      const response = await axios.put("http://localhost:8080/users/edit", {
         username: username,
         password: password,
       });
@@ -55,15 +55,12 @@ const EditUser = () => {
   
         if (data.message === "Username already exists") {
           setErrorMessages({ generalMsg: "Username already exists" });
-          setToastMessage("Username already exists");
         } else {
           setErrorMessages({ generalMsg: "An error occurred. Please try again." });
-          setToastMessage("An error occurred. Please try again.");
         }
       } else {
         // In case of network errors or unexpected issues
         setErrorMessages({ generalMsg: "An unexpected error occurred." });
-        setToastMessage("An unexpected error occurred.");
       }
     }
   };
@@ -88,7 +85,7 @@ const EditUser = () => {
             <p className="text-red-500">{errorMessages.usernameMsg}</p>
           )}
           <label className="text-slate-100 relative">
-            Password
+            New Password
             <input
               type={showPassword ? "text" : "password"}
               className="mt-1 p-1 border border-gray-400 bg-black opacity-55 rounded-md w-full items-center justify-center"

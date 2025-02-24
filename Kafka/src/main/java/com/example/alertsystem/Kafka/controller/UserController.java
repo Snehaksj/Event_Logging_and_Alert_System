@@ -12,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.plaf.synth.SynthOptionPaneUI;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,13 +79,20 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
-        System.out.println("skgwbgf bjkfsbvsfnvsfnvnslkvns");
         return ResponseEntity.ok(users);
     }
 
     @PostMapping("/create-bulk")
-    public ResponseEntity<String> createUsersBulk(@RequestBody List<User> users) {
-        userService.saveAll(users);
-        return ResponseEntity.ok("Users created successfully");
+    public ResponseEntity<String> createUsersBulk(@RequestParam("file") MultipartFile file) {
+        try {
+            List<String> errorMessages = userService.saveBulkUsers(file);
+            if (errorMessages.isEmpty()) {
+                return ResponseEntity.ok("Users created successfully");
+            } else {
+                return ResponseEntity.badRequest().body(String.join(", ", errorMessages));
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("An error occurred while processing the file");
+        }
     }
 }
