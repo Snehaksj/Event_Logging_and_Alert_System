@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/alarms")
 public class AlarmController {
+
     private final AlarmService alarmService;
 
     public AlarmController(AlarmService alarmService) {
