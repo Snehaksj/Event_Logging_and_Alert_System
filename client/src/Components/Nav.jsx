@@ -25,7 +25,7 @@ const Nav = () => {
         Event Logging and Alert System
       </h2></Link>
       <div className='flex gap-8 justify-center items-center text-white cursor-pointer'>
-       <Link to="/users"><h4 className='hover:text-gray-500'>{role=="ADMIN" ? "Users":""}</h4></Link>
+       <Link to="/users"><h4 className='hover:text-gray-500'>{role=="[ROLE_ADMIN]" ? "Users":""}</h4></Link>
         <Link to="/devices"><h4 className='hover:text-gray-500'>Device</h4></Link>
         <Link to="/alarms"><h4 className='hover:text-gray-500'>Alarms</h4></Link>
       {/* Logout Button */}
