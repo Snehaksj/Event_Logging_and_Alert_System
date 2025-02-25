@@ -1,17 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Nav from '../Components/Nav.jsx';
 import axios from 'axios';
 import Toast from '../Components/Toast.jsx'; // Import the Toast component
 
 const DeleteUser = () => {
-  const [username, setUsername] = useState("");
+  const [users, setUsers] = useState([]); // State to hold users
+  const [selectedUser, setSelectedUser] = useState(""); // State for selected user
   const [errorMessages, setErrorMessages] = useState({
-    usernameMsg: "",
+    selectedUserMsg: "",
     generalMsg: "", // Added for general error messages
   });
   const [toastMessage, setToastMessage] = useState(""); // Toast message state
   const navigate = useNavigate(); // Initialize the navigate function
+
+  // Fetch users when the component mounts or after deletion
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/users"); // Fetch the users list
+      setUsers(response.data); // Set the fetched users
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      setErrorMessages({ generalMsg: "Failed to fetch users" });
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers(); // Fetch users on mount
+  }, []); // Empty dependency array so this only runs on mount
 
   const handleBack = () => {
     navigate('/users'); // Navigate back to the /users page
@@ -19,31 +35,30 @@ const DeleteUser = () => {
 
   const handleDelete = async (e) => {
     e.preventDefault();
-    setErrorMessages({ usernameMsg: "", generalMsg: "" });
-  
+    setErrorMessages({ selectedUserMsg: "", generalMsg: "" });
+
     // Validate input
-    if (!username) {
+    if (!selectedUser) {
       setErrorMessages({
-        usernameMsg: "Username is required",
+        selectedUserMsg: "Please select a user to delete",
       });
       return;
     }
-  
+
     try {
       // Make an API request to delete the user using axios
-      const response = await axios.delete("http://localhost:8080/users/delete",{data:{username:username}} // Pass the username as part of the request body
-      );
-      
+      const response = await axios.delete("http://localhost:8080/users/delete", {
+        data: { username: selectedUser }, // Pass the username as part of the request body
+      });
+
       // If the response status is 200, it means deletion was successful
       setToastMessage("User deleted successfully");
-      setUsername(""); // Reset username field
+      setSelectedUser(""); // Reset selected user field
+      fetchUsers(); // Refetch users after deletion
     } catch (error) {
-    
       // Check if error.response exists (i.e., if the server responded with an error)
       if (error.response) {
-         // Get the error data from the response
-        console.log(data);
-        
+        const data = error.response.data;
         if (data.message === "Username does not exist") {
           setErrorMessages({ generalMsg: "Username does not exist" });
         } else {
@@ -55,7 +70,6 @@ const DeleteUser = () => {
       }
     }
   };
-  
 
   return (
     <>
@@ -65,16 +79,22 @@ const DeleteUser = () => {
         <h3 className="text-center text-2xl font-sans text-white">Delete User</h3>
         <form className="flex flex-col gap-6" onSubmit={handleDelete}>
           <label className="text-slate-100">
-            Username
-            <input
-              type="text"
+            Select User
+            <select
+              value={selectedUser}
+              onChange={(e) => setSelectedUser(e.target.value)}
               className="mt-1 p-1 border border-slate-400 bg-black opacity-55 rounded-md w-full"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
+            >
+              <option value="">-- Select User --</option>
+              {users.map((user) => (
+                <option key={user.username} value={user.username}>
+                  {user.username}
+                </option>
+              ))}
+            </select>
           </label>
-          {errorMessages.usernameMsg && (
-            <p className="text-red-500">{errorMessages.usernameMsg}</p>
+          {errorMessages.selectedUserMsg && (
+            <p className="text-red-500">{errorMessages.selectedUserMsg}</p>
           )}
 
           {/* Display general error message */}

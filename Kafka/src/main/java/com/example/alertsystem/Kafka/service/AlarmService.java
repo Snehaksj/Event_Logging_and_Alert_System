@@ -29,7 +29,7 @@ public class AlarmService {
         alarm.setCriticality(criticality);
         alarm.setMessage(message);
         alarm.setResolved(false);
-
+        alarm.setDevice(device);
         alarm.setTimestamp(LocalDateTime.now());
 
 
