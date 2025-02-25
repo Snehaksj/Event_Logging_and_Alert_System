@@ -12,10 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/devices")
@@ -49,7 +52,22 @@ public class DeviceController {
         }
     }
 
-    @GetMapping("/{username}")
+    @PostMapping("/create-bulk-devices")
+    public ResponseEntity<String> createDevicesBulk(@RequestParam("file") MultipartFile file) {
+        try {
+            List<String> errorMessages = deviceService.saveBulkDevices(file);
+            if (errorMessages.isEmpty()) {
+                return ResponseEntity.ok("Devices created successfully");
+            } else {
+                return ResponseEntity.badRequest().body(String.join(", ", errorMessages));
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("An error occurred while processing the file");
+        }
+    }
+
+
+    @GetMapping("/user/{username}")
     public ResponseEntity<List<Device>> getUserDevices(@PathVariable String username) {
         Map<String, String> response = new HashMap<>();
         User user = userService.getUserByUsername(username);
@@ -68,14 +86,35 @@ public class DeviceController {
         return ResponseEntity.ok(devices);
     }
 
+    @GetMapping("/{deviceName}")
+    public ResponseEntity<?> getDeviceByName(@PathVariable String deviceName) {
+        try {
+            Optional<Device> device = deviceService.getDeviceByName(deviceName);
+            if (device.isPresent()) {
+                return ResponseEntity.ok(device.get());
+            } else {
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Device not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
+            // Log the exception for better debugging
+            e.printStackTrace();
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Internal Server Error");
+            response.put("error", e.getMessage());  // Include the error message in the response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 
-    @PutMapping("/edit/{username}/{deviceName}")
-    public ResponseEntity<Map<String, String>> editDevice(@RequestBody DeviceRequest request, @PathVariable String username, @PathVariable String deviceName) {
+
+    @PutMapping("/edit/{oldUsername}/{username}/{deviceName}")
+    public ResponseEntity<Map<String, String>> editDevice(@RequestBody DeviceRequest request, @PathVariable String oldUsername, @PathVariable String username, @PathVariable String deviceName) {
         Map<String, String> response = new HashMap<>();
         try {
-            User user = userService.getUserByUsername(username);
-            Device device = deviceService.updateDevice(user.getId(), deviceName, request);
-
+            User oldUser = userService.getUserByUsername(oldUsername);
+            User newUser = userService.getUserByUsername(username);
+            Device device = deviceService.updateDevice(oldUser.getId(),newUser, deviceName, request);
             response.put("message", "Device updated successfully");
             response.put("status", "success");
 
@@ -87,12 +126,11 @@ public class DeviceController {
     }
 
 
-    @DeleteMapping("/delete/{username}/{deviceName}")
-    public ResponseEntity<Map<String, String>> deleteDevice(@PathVariable String username, @PathVariable String deviceName) {
+    @DeleteMapping("/delete/{deviceName}")
+    public ResponseEntity<Map<String, String>> deleteDevice( @PathVariable String deviceName) {
         Map<String, String> response = new HashMap<>();
-        User user = userService.getUserByUsername(username);
 
-        deviceService.deleteDevice(user.getId(), deviceName);
+        deviceService.deleteDevice( deviceName);
         response.put("message", "Device deleted successfully");
         response.put("status", "success");
 
