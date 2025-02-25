@@ -16,21 +16,32 @@ public class AlarmService {
     @Autowired
     private AlarmRepository alarmRepository;
 
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public Alarm createAlarm(Long deviceId, String criticality, String message) {
+
+    public Alarm createAlarm(Device device, String criticality, String message) {
+
         Alarm alarm = new Alarm();
         alarm.setDeviceId(deviceId);
         alarm.setCriticality(criticality);
         alarm.setMessage(message);
         alarm.setResolved(false);
+
+        alarm.setTimestamp(LocalDateTime.now());
+
+
         return alarmRepository.save(alarm);
     }
+
+
+
 
     public List<Alarm> getAlarmsByDevice(Long deviceId) {
         return alarmRepository.findByDeviceId(deviceId); // ✅ Fetch alarms by device ID
     }
+
     public Alarm resolveAlarm(Long alarmId) {
         Optional<Alarm> optionalAlarm = alarmRepository.findById(alarmId);
         if (optionalAlarm.isPresent()) {
@@ -52,6 +63,20 @@ public class AlarmService {
         } else {
             throw new RuntimeException("Alarm not found");
         }
+    }
+
+
+
+    public Alarm resolveAlarm2(String message, Long deviceId) {
+        Alarm alarm = alarmRepository.findByMessage(message)
+                .orElseThrow(() -> new RuntimeException("Alarm not found"));
+
+        if (!alarm.getDevice().getId().equals(deviceId)) {
+            throw new RuntimeException("Alarm does not belong to the given device");
+        }
+
+        alarm.setResolved(true);
+        return alarmRepository.save(alarm);
     }
 
 }

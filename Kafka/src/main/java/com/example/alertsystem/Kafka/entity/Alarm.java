@@ -17,7 +17,11 @@ public class Alarm {
     @Column(name = "criticality", nullable = false)
     private String criticality;
 
+
     @Column(name = "message", nullable = false)
+
+    @Column(unique = true, nullable = false)
+
     private String message;
 
     @Column(name = "severity", nullable = false) // ✅ Added missing severity column

@@ -1,52 +1,99 @@
 package com.example.alertsystem.Kafka.controller;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.example.alertsystem.Kafka.entity.Role;
 import com.example.alertsystem.Kafka.entity.User;
+import com.example.alertsystem.Kafka.repository.UserRepository;
 import com.example.alertsystem.Kafka.service.UserService;
 import com.example.alertsystem.Kafka.dto.RegisterRequest;
+import org.apache.kafka.common.protocol.types.Field;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/users")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
+
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody RegisterRequest request, Authentication authentication) {
-        User admin = userService.getUserByUsername(authentication.getName());
-        if (admin.getRole() != Role.ADMIN) {
-            return ResponseEntity.status(403).body("Unauthorized");
+    @DeleteMapping("/delete")
+    public ResponseEntity<Map<String, String>> deleteUser(@RequestBody Map<String,String> request) {
+        Map<String, String> response = new HashMap<>();
+        String username = request.get("username");
+        try {
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("Username does not exist"));
+            userService.deleteUser(username);
+            response.put("message","User deleted successfully");
+            response.put("status","success");
+            return ResponseEntity.ok(response);
         }
+        catch (RuntimeException e){
 
-        User newUser = userService.createUser(request.getUsername(), request.getPassword(), request.isAdmin());
-        return ResponseEntity.ok(newUser);
-    }
+            response.put("message", e.getMessage());
+            response.put("status", "error");
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId, Authentication authentication) {
-        User admin = userService.getUserByUsername(authentication.getName());
-        if (admin.getRole() != Role.ADMIN) {
-            return ResponseEntity.status(403).body("Unauthorized");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
-        userService.deleteUser(userId);
-        return ResponseEntity.ok("User deleted successfully");
     }
+
+    @PutMapping("/edit")
+    public ResponseEntity<Map<String, String>> editUser(@RequestBody Map<String,String> request) {
+        Map<String, String> response = new HashMap<>();
+        String username = request.get("username");
+        String password = request.get("password");
+        try {
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("Username does not exist"));
+            userService.editUser(username,password);
+            response.put("message","Password edited successfully");
+            response.put("status","success");
+            return ResponseEntity.ok(response);
+        }
+        catch (RuntimeException e){
+
+            response.put("message", e.getMessage());
+            response.put("status", "error");
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
+    }
+
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(Authentication authentication) {
-        User admin = userService.getUserByUsername(authentication.getName());
-        if (admin.getRole() != Role.ADMIN) {
-            return ResponseEntity.status(403).body(null);
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @PostMapping("/create-bulk")
+    public ResponseEntity<String> createUsersBulk(@RequestParam("file") MultipartFile file) {
+        try {
+            List<String> errorMessages = userService.saveBulkUsers(file);
+            if (errorMessages.isEmpty()) {
+                return ResponseEntity.ok("Users created successfully");
+            } else {
+                return ResponseEntity.badRequest().body(String.join(", ", errorMessages));
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("An error occurred while processing the file");
         }
-        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @PostMapping("/create-bulk")

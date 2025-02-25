@@ -1,5 +1,6 @@
 package com.example.alertsystem.Kafka.entity;
 
+import com.example.alertsystem.Kafka.dto.DeviceRequest;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -11,6 +12,7 @@ public class Device {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name", unique = true)  // Ensure the device name is unique
     private String name;
 
     @ManyToOne
@@ -49,4 +51,6 @@ public class Device {
     public void setConfiguration(List<String> configuration) {
         this.configuration = configuration;
     }
+
+
 }
