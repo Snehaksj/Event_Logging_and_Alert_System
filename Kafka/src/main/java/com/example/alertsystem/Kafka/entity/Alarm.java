@@ -20,6 +20,9 @@ public class Alarm {
     @Column(name = "message", nullable = false)
     private String message;
 
+    @Column(name = "severity", nullable = false) // ✅ Added missing severity column
+    private String severity;
+
     @Column(name = "resolved", nullable = false)
     private boolean resolved = false;
 
@@ -59,13 +62,23 @@ public class Alarm {
         this.message = message;
     }
 
-    public boolean isResolved() {
+    public String getSeverity() {  // ✅ Added missing getter
+        return severity;
+    }
+
+    public void setSeverity(String severity) {  // ✅ Added missing setter
+        this.severity = severity;
+    }
+
+    public boolean getResolved() {
         return resolved;
     }
 
     public void setResolved(boolean resolved) {
         this.resolved = resolved;
     }
+
+
 
     public LocalDateTime getTimestamp() {
         return timestamp;

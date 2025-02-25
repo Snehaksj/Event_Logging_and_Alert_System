@@ -12,19 +12,10 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
 
-    // ✅ Support JSON Body Requests
+    // ✅ JSON Body Request
     @PostMapping("/send")
     public String sendEmail(@RequestBody EmailRequest emailRequest) {
         emailService.sendEmail(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getMessage());
         return "Email sent successfully to: " + emailRequest.getTo();
-    }
-
-    // ✅ Support Query Parameters (Existing Functionality)
-    @PostMapping("/send-params")
-    public String sendEmailWithParams(@RequestParam String to,
-                                      @RequestParam String subject,
-                                      @RequestParam String message) {
-        emailService.sendEmail(to, subject, message);
-        return "Email sent successfully to: " + to;
     }
 }

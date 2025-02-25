@@ -24,6 +24,7 @@ public class AlarmController {
         return ResponseEntity.ok(alarm);
     }
 
+
     @GetMapping("/{deviceId}")
     public ResponseEntity<List<Alarm>> getAlarmsByDevice(@PathVariable Long deviceId) {
         return ResponseEntity.ok(alarmService.getAlarmsByDevice(deviceId));
