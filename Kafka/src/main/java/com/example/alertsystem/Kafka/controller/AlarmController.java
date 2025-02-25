@@ -19,7 +19,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/alarms")
 public class AlarmController {
-
     private final AlarmService alarmService;
     private final DeviceService deviceService;
     private final UserService userService;
@@ -62,16 +61,9 @@ public class AlarmController {
         return ResponseEntity.ok(alarmService.getAlarmsByDevice(device.getId()));
     }
 
-
-
-    @GetMapping("/{deviceId}")
-    public ResponseEntity<List<Alarm>> getAlarmsByDevice(@PathVariable Long deviceId) {
-        return ResponseEntity.ok(alarmService.getAlarmsByDevice(deviceId));
-
     @GetMapping("/all")
     public ResponseEntity<List<Alarm>> getAllAlarms() {
         return ResponseEntity.ok(alarmRepository.findAll());
-
     }
 
     // 📌 Resolve Alarm (Pass: username, deviceName, alarmId)
@@ -83,7 +75,7 @@ public class AlarmController {
         try {
             User user = userService.getUserByUsername(username);
             Device device = deviceService.getDeviceByUserAndName(user.getId(), deviceName);
-            alarmService.resolveAlarm(message, device.getId());
+            alarmService.resolveAlarm(message);
 
             response.put("message", "Alarm resolved successfully");
             response.put("status", "success");

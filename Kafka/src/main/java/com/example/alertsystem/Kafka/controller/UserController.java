@@ -95,10 +95,4 @@ public class UserController {
             return ResponseEntity.status(500).body("An error occurred while processing the file");
         }
     }
-
-    @PostMapping("/create-bulk")
-    public ResponseEntity<String> createUsersBulk(@RequestBody List<User> users) {
-        userService.saveAll(users);
-        return ResponseEntity.ok("Users created successfully");
-    }
 }

@@ -39,9 +39,9 @@ public class DeviceController {
         try{
             User user = userService.getUserByUsername(username);
 
-                Device device = deviceService.createDevice(user, deviceName, request);
-                response.put("message", "Device created successfully");
-                response.put("status", "success");
+            Device device = deviceService.createDevice(user, deviceName, request);
+            response.put("message", "Device created successfully");
+            response.put("status", "success");
 
             return ResponseEntity.ok(response);
         }
@@ -72,7 +72,7 @@ public class DeviceController {
         Map<String, String> response = new HashMap<>();
         User user = userService.getUserByUsername(username);
         try{
-        return ResponseEntity.ok(deviceService.getDevicesByUser(user.getId()));
+            return ResponseEntity.ok(deviceService.getDevicesByUser(user.getId()));
         } catch (Exception e) {
             response.put("message", "Device unavailable");
             response.put("status", "failure");
@@ -107,18 +107,6 @@ public class DeviceController {
         }
     }
 
-    @PostMapping("/create-bulk")
-    public ResponseEntity<String> createDevicesBulk(@RequestBody List<Device> devices) {
-        deviceService.saveAll(devices);
-        return ResponseEntity.ok("Devices created successfully");
-    }
-    @DeleteMapping("/{deviceId}")
-    public ResponseEntity<?> deleteDevice(@PathVariable Long deviceId, Authentication authentication) {
-        User user = userService.getUserByUsername(authentication.getName());
-        deviceService.deleteDevice(deviceId, user);
-        return ResponseEntity.ok("Device deleted successfully");
-
-
 
     @PutMapping("/edit/{oldUsername}/{username}/{deviceName}")
     public ResponseEntity<Map<String, String>> editDevice(@RequestBody DeviceRequest request, @PathVariable String oldUsername, @PathVariable String username, @PathVariable String deviceName) {
@@ -146,6 +134,6 @@ public class DeviceController {
         response.put("message", "Device deleted successfully");
         response.put("status", "success");
 
-
+        return ResponseEntity.ok(response);
     }
 }

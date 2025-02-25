@@ -1,4 +1,5 @@
 package com.example.alertsystem.Kafka.service;
+import com.example.alertsystem.Kafka.entity.Device;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.alertsystem.Kafka.entity.Alarm;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +26,6 @@ public class AlarmService {
     public Alarm createAlarm(Device device, String criticality, String message) {
 
         Alarm alarm = new Alarm();
-        alarm.setDeviceId(deviceId);
         alarm.setCriticality(criticality);
         alarm.setMessage(message);
         alarm.setResolved(false);
@@ -39,11 +40,11 @@ public class AlarmService {
 
 
     public List<Alarm> getAlarmsByDevice(Long deviceId) {
-        return alarmRepository.findByDeviceId(deviceId); // ✅ Fetch alarms by device ID
+        return alarmRepository.findByDevice_Id(deviceId); // ✅ Fetch alarms by device ID
     }
 
-    public Alarm resolveAlarm(Long alarmId) {
-        Optional<Alarm> optionalAlarm = alarmRepository.findById(alarmId);
+    public Alarm resolveAlarm(String message) {
+        Optional<Alarm> optionalAlarm = alarmRepository.findByMessage(message);
         if (optionalAlarm.isPresent()) {
             Alarm alarm = optionalAlarm.get();
             if (!alarm.getResolved()) {
