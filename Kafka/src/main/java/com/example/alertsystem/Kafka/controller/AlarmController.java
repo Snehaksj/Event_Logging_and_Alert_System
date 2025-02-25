@@ -38,9 +38,25 @@ public class AlarmController {
                                                            @PathVariable String deviceName) {
         Map<String, String> response = new HashMap<>();
         try {
-            User user = userService.getUserByUsername(username);
-            Device device = deviceService.getDeviceByUserAndName(user.getId(), deviceName);
+            User user;
+            Long userId;
 
+            // Check if the username is "admin"
+            if (username.equals("admin")) {
+                // If admin, fetch the device and retrieve the userId associated with it
+                Device device = deviceService.getDeviceByName(deviceName)  // Fetch device by name (admin case)
+                        .orElseThrow(() -> new RuntimeException("Device not found"));
+                userId = device.getUser().getId();  // Get the user associated with the device
+            } else {
+                // If not admin, fetch the user by username
+                user = userService.getUserByUsername(username);
+                userId = user.getId();
+            }
+
+            // Fetch the device for the userId and deviceName
+            Device device = deviceService.getDeviceByUserAndName(userId, deviceName);
+
+            // Create the alarm
             alarmService.createAlarm(device, request.getCriticality(), request.getMessage());
             response.put("message", "Alarm created successfully");
             response.put("status", "success");

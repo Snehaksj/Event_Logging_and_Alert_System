@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Nav from '../Components/Nav.jsx';
 import axios from 'axios';
 import Toast from '../Components/Toast.jsx'; // Import the Toast component
 
 const EditUser = () => {
-  const [username, setUsername] = useState("");
+  const [users, setUsers] = useState([]); // State to store the list of users
+  const [selectedUsername, setSelectedUsername] = useState(""); // State to store the selected username
   const [password, setPassword] = useState("");
   const [errorMessages, setErrorMessages] = useState({
     usernameMsg: "",
@@ -15,6 +16,20 @@ const EditUser = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [toastMessage, setToastMessage] = useState(""); // Toast message state
   const navigate = useNavigate(); // Initialize the navigate function
+
+  // Fetch all users from the backend on component mount
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/users"); // Replace with your API endpoint for fetching users
+        setUsers(response.data); // Assuming response.data is an array of users
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
@@ -29,9 +44,9 @@ const EditUser = () => {
     setErrorMessages({ usernameMsg: "", passwordMsg: "", generalMsg: "" });
   
     // Validate input
-    if (!username || !password) {
+    if (!selectedUsername || !password) {
       setErrorMessages({
-        usernameMsg: username ? "" : "Username is required",
+        usernameMsg: selectedUsername ? "" : "Username is required",
         passwordMsg: password ? "" : "Password is required",
       });
       return;
@@ -40,13 +55,13 @@ const EditUser = () => {
     try {
       // Make an API request to register the user using axios
       const response = await axios.put("http://localhost:8080/users/edit", {
-        username: username,
+        username: selectedUsername,
         password: password,
       });
   
       // If the response status is 200, it means registration was successful
       setToastMessage("Password changed successfully");
-      setUsername(""); // Reset username field
+      setSelectedUsername(""); // Reset username field
       setPassword(""); // Reset password field
     } catch (error) {
       // If an error occurs, check if it's a 400 response (user already exists)
@@ -72,18 +87,26 @@ const EditUser = () => {
       <div className="m-10 p-11 h-[400px] w-96 bg-slate-900 absolute rounded-2xl top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col gap-7">
         <h3 className="text-center text-2xl font-sans text-white">Change Password</h3>
         <form className="flex flex-col gap-6" onSubmit={handleEdit}>
+          {/* Dropdown to select a user */}
           <label className="text-slate-100">
-            Username
-            <input
-              type="text"
+            Select User
+            <select
+              value={selectedUsername}
+              onChange={(e) => setSelectedUsername(e.target.value)}
               className="mt-1 p-1 border border-slate-400 bg-black opacity-55 rounded-md w-full"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
+            >
+              <option value="">Select a user</option>
+              {users.map((user) => (
+                <option key={user.username} value={user.username}>
+                  {user.username}
+                </option>
+              ))}
+            </select>
           </label>
           {errorMessages.usernameMsg && (
             <p className="text-red-500">{errorMessages.usernameMsg}</p>
           )}
+
           <label className="text-slate-100 relative">
             New Password
             <input

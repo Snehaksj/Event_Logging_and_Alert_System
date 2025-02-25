@@ -17,6 +17,8 @@ import AddMultipleDevice from './pages/AddMultipleDevice.jsx';
 import EditDevice from './pages/EditDevice.jsx';
 import DeleteDevice from './pages/DeleteDevice.jsx';
 import ViewDevice from './pages/ViewDevice.jsx';
+import AddAlarm from './pages/AddAlarm.jsx';
+import ViewAlarm from './pages/ViewAlarm.jsx';
 
 
 
@@ -41,6 +43,8 @@ function App() {
           <Route path="/devices/edit" element={<ProtectedRoute><EditDevice/></ProtectedRoute>} />
           <Route path="/devices/delete" element={<ProtectedRoute><DeleteDevice/></ProtectedRoute>} />
           <Route path="/devices/view" element={<ProtectedRoute><ViewDevice/></ProtectedRoute>} />
+          <Route path="/alarms/create" element={<ProtectedRoute><AddAlarm/></ProtectedRoute>} />
+          <Route path="/alarms/view" element={<ProtectedRoute><ViewAlarm/></ProtectedRoute>} />
         </Routes>
       </Router>
     </AuthProvider>
