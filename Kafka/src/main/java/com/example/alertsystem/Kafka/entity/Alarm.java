@@ -4,45 +4,50 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "alarm")
 public class Alarm {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "device_id", nullable = false)
-    private Device device;
+    @Column(name = "device_id", nullable = false)
+    private Long deviceId;
 
+    @Column(name = "criticality", nullable = false)
     private String criticality;
+
+
+    @Column(name = "message", nullable = false)
+
     @Column(unique = true, nullable = false)
+
     private String message;
-    private boolean resolved;
-    private LocalDateTime timestamp;
 
-    // Default Constructor
-    public Alarm() {}
+    @Column(name = "severity", nullable = false) // ✅ Added missing severity column
+    private String severity;
 
-    // Parameterized Constructor
-    public Alarm(Device device, String criticality, String message, boolean resolved, LocalDateTime timestamp) {
-        this.device = device;
-        this.criticality = criticality;
-        this.message = message;
-        this.resolved = resolved;
-        this.timestamp = timestamp;
-    }
+    @Column(name = "resolved", nullable = false)
+    private boolean resolved = false;
 
-    // ✅ Explicit Getters and Setters
+    @Column(name = "timestamp", nullable = false)
+    private LocalDateTime timestamp = LocalDateTime.now();
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
 
-    public Device getDevice() {
-        return device;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setDevice(Device device) {
-        this.device = device;
+    public Long getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(Long deviceId) {
+        this.deviceId = deviceId;
     }
 
     public String getCriticality() {
@@ -61,13 +66,23 @@ public class Alarm {
         this.message = message;
     }
 
-    public boolean isResolved() {
+    public String getSeverity() {  // ✅ Added missing getter
+        return severity;
+    }
+
+    public void setSeverity(String severity) {  // ✅ Added missing setter
+        this.severity = severity;
+    }
+
+    public boolean getResolved() {
         return resolved;
     }
 
     public void setResolved(boolean resolved) {
         this.resolved = resolved;
     }
+
+
 
     public LocalDateTime getTimestamp() {
         return timestamp;

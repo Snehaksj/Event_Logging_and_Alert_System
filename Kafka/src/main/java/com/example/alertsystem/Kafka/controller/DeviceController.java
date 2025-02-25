@@ -107,6 +107,18 @@ public class DeviceController {
         }
     }
 
+    @PostMapping("/create-bulk")
+    public ResponseEntity<String> createDevicesBulk(@RequestBody List<Device> devices) {
+        deviceService.saveAll(devices);
+        return ResponseEntity.ok("Devices created successfully");
+    }
+    @DeleteMapping("/{deviceId}")
+    public ResponseEntity<?> deleteDevice(@PathVariable Long deviceId, Authentication authentication) {
+        User user = userService.getUserByUsername(authentication.getName());
+        deviceService.deleteDevice(deviceId, user);
+        return ResponseEntity.ok("Device deleted successfully");
+
+
 
     @PutMapping("/edit/{oldUsername}/{username}/{deviceName}")
     public ResponseEntity<Map<String, String>> editDevice(@RequestBody DeviceRequest request, @PathVariable String oldUsername, @PathVariable String username, @PathVariable String deviceName) {
@@ -134,6 +146,6 @@ public class DeviceController {
         response.put("message", "Device deleted successfully");
         response.put("status", "success");
 
-        return ResponseEntity.ok(response);
+
     }
 }

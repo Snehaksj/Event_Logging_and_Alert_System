@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true); // Set authenticated status
         setRole(data.role); // Store the role from the response
         setUsername(data.username);
+
         return { success: true };
       } else {
         return { success: false, error: data.message || "Login failed" };
@@ -41,6 +42,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setIsAuthenticated(false); // Update the state to indicate the user is logged out
     setRole(""); // Reset the role on logout
+
     setUsername("");
   };
 

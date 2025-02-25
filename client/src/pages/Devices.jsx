@@ -44,7 +44,6 @@ const Devices = () => {
         </div>
 
         <div className="flex gap-10 justify-center items-center">
-          
           {/* Card 4: Delete Device */}
           <div
             className="h-[200px] w-[300px] rounded-xl bg-slate-900 flex flex-col items-center justify-center hover:scale-105 hover:bg-slate-700 transition-all duration-300 shadow-lg cursor-pointer"

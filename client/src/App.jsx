@@ -19,6 +19,7 @@ import DeleteDevice from './pages/DeleteDevice.jsx';
 import ViewDevice from './pages/ViewDevice.jsx';
 
 
+
 function App() {
   return (
     <AuthProvider>

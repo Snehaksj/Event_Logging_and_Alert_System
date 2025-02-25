@@ -58,6 +58,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
+
     public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> request) {
         String username = request.get("username");
         String password = request.get("password");
@@ -98,6 +99,7 @@ public class AuthController {
             response.put("status", "error");
 
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+
         }
     }
 
