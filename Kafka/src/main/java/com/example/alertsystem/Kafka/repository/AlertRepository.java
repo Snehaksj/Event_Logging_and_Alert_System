@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface AlertRepository extends JpaRepository<Alert, Long> {
     List<Alert> findBySeverity(String severity);
+    List<Alert> findByDeviceIdIn(List<Long> deviceIds);
 }

@@ -130,7 +130,7 @@ public class DeviceService {
 
 
     public Device updateDevice(Long userId,User newUser, String deviceName, DeviceRequest request) {
-        List<Device> devices = deviceRepository.findByUserId(userId);
+        List<Device> devices = deviceRepository.findByUser_Id(userId);
         Optional<Device> optionalDevice = devices.stream()
                 .filter(device -> device.getName().equals(deviceName))
                 .findFirst();
@@ -152,10 +152,10 @@ public class DeviceService {
 
 
     public List<Device> getDevicesByUser(Long userId) {
-        return deviceRepository.findByUserId(userId);
+        return deviceRepository.findByUser_Id(userId);
     }
     public Device getDeviceByUserAndName(Long userId, String deviceName) {
-        return deviceRepository.findByUserIdAndName(userId, deviceName)
+        return deviceRepository.findByUser_IdAndName(userId, deviceName)
                 .orElseThrow(() -> new RuntimeException("Device not found"));
     }
 

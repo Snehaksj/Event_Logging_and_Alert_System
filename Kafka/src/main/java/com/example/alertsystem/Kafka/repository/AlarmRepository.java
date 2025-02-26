@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
-
+    List<Alarm> findByDevice_IdIn(List<Long> deviceIds);
     List<Alarm> findByDevice_Id(Long deviceId);
     Optional<Alarm> findByMessage(String message);
 

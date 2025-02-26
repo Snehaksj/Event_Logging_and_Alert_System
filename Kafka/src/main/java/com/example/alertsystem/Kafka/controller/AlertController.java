@@ -1,4 +1,8 @@
 package com.example.alertsystem.Kafka.controller;
+import com.example.alertsystem.Kafka.entity.Device;
+import com.example.alertsystem.Kafka.entity.User;
+import com.example.alertsystem.Kafka.repository.DeviceRepository;
+import com.example.alertsystem.Kafka.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.alertsystem.Kafka.model.Alert;
@@ -15,10 +19,14 @@ public class AlertController {
 
     private final AlertProducer alertProducer;
     private final AlertRepository alertRepository;
+    private final UserService userService;
+    private final DeviceRepository deviceRepository;
 
-    public AlertController(AlertProducer alertProducer, AlertRepository alertRepository) {
+    public AlertController(AlertProducer alertProducer, AlertRepository alertRepository, UserService userService, DeviceRepository deviceRepository) {
         this.alertProducer = alertProducer;
         this.alertRepository = alertRepository;
+        this.userService = userService;
+        this.deviceRepository = deviceRepository;
     }
 
     @PostMapping
@@ -33,6 +41,27 @@ public class AlertController {
         List<Alert> alerts = alertRepository.findAll();  // Fetch all alerts from DB
         return ResponseEntity.ok(alerts);  // Return list of alerts in JSON format
     }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<List<Alert>> getAlertsByUsername(@PathVariable String username) {
+        // Fetch the user by username
+        User user = userService.getUserByUsername(username);
+
+        // Fetch devices associated with the user
+        List<Device> devices = deviceRepository.findByUser_Id(user.getId());
+
+        // Extract the device IDs
+        List<Long> deviceIds = devices.stream()
+                .map(Device::getId)
+                .collect(Collectors.toList());
+
+        // Fetch the alerts associated with the devices
+        List<Alert> alerts = alertRepository.findByDeviceIdIn(deviceIds);
+
+        // Return the list of alerts
+        return ResponseEntity.ok(alerts);
+    }
+
 
     // Endpoint to get deviceId and message for critical severity alerts (GET)
     @GetMapping("/critical")

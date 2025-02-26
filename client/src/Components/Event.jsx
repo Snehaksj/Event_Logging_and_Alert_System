@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";  // Import axios
+import {useAuth} from "../Context/authContext.jsx";
 import {
   createColumnHelper,
   flexRender,
@@ -64,14 +65,16 @@ export default function Event() {
   const [globalFilter, setGlobalFilter] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(5);
+  const {username,role} = useAuth();
 
   // Fetch data every 7 seconds using axios
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/alert");
+        const apiUrl = role=="[ROLE_ADMIN]"?"http://localhost:8080/alert":`http://localhost:8080/alert/${username}`;
+        const response = await axios.get(apiUrl);
         setData(response.data); // Set the data first
-        console.log(response.data); // Log the response data after setting
+        // Log the response data after setting
       } catch (error) {
         console.error("Error fetching data:", error);
       }

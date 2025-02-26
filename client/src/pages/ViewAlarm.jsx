@@ -22,14 +22,14 @@ export default function ViewUser() {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(5);
   const [error, setError] = useState(null);
-
-  const { username } = useAuth();
+  const { username, role } = useAuth(); // Get the role from the auth context
   const navigate = useNavigate();
 
   // Fetch alarm data once when the component is mounted
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // console.log(username)
         const url =
           username === "admin"
             ? "http://localhost:8080/alarms/all"
@@ -46,6 +46,26 @@ export default function ViewUser() {
 
     fetchData(); // Fetch data initially
   }, [username]);
+
+  // Function to resolve alarm
+  const resolveAlarm = async (alarmId) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/alarms/resolve/${alarmId}`
+      );
+      console.log("Resolved Alarm:", response.data);
+      // After resolving, fetch data again to update the status
+      setData((prevData) =>
+        prevData.map((alarm) =>
+          alarm.id === alarmId
+            ? { ...alarm, resolved: true }
+            : alarm
+        )
+      );
+    } catch (error) {
+      console.error("Error resolving alarm:", error);
+    }
+  };
 
   // Dynamically create columns for alarms data
   const columns = [
@@ -70,21 +90,43 @@ export default function ViewUser() {
       cell: (info) => info.getValue(),
       filterFn: "includes", // Make column filterable
     }),
-    columnHelper.accessor("resolved", {
-      header: () => <span className="flex items-center">Resolved</span>,
-      cell: (info) => (info.getValue() ? "Yes" : "No"),
-      filterFn: "includes", // Make column filterable
-    }),
     columnHelper.accessor("timestamp", {
       header: () => <span className="flex items-center">Timestamp</span>,
       cell: (info) => info.getValue(),
       filterFn: "includes", // Make column filterable
     }),
+    // Resolved column: Show button only for admin users or display "Yes" / "No"
+    columnHelper.accessor("resolved", {
+      header: () => <span className="flex items-center">Resolved</span>,
+      cell: (info) => {
+        const resolved = info.getValue();
+        if (role === "[ROLE_ADMIN]") {
+          return resolved ? (
+            "Yes"
+          ) : (
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+              onClick={() => resolveAlarm(info.row.original.id)}
+            >
+              Resolve
+            </button>
+          );
+        } else {
+          return resolved ? "Yes" : "No";
+        }
+      },
+      filterFn: "includes", // Make column filterable
+    }),
   ];
+
+  // Reorder columns to make the resolved column last
+  const reorderedColumns = [...columns];
+  const resolvedColumn = reorderedColumns.pop(); // Remove the resolved column from its position
+  reorderedColumns.push(resolvedColumn); // Add it to the end of the array
 
   const table = useReactTable({
     data,
-    columns,
+    columns: reorderedColumns,
     state: { sorting, globalFilter, pagination: { pageIndex, pageSize } },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
