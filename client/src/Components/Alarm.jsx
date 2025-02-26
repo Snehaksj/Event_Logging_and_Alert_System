@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
+import { useAuth } from "../Context/authContext.jsx"; // Assuming you have a context for authentication
 
 const columnHelper = createColumnHelper();
 
@@ -25,26 +20,47 @@ const columns = [
 export default function Alarm() {
   const [data, setData] = useState([]); // State to hold the data
   const [sorting, setSorting] = useState([]); // Sorting state
+  const [deviceIds, setDeviceIds] = useState([]); // Device IDs for filtering
+  const { username, role } = useAuth(); // Get the current username and role from context
 
-  // Fetch data from the endpoint on component mount
+  // Combined useEffect for fetching device IDs and alerts
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/alert/critical");
-        setData(response.data); // Set the fetched data
-        console.log(response.data); // Log the response data
+        let alerts = [];
+        // If the user is a normal user, fetch their devices first
+        if (role === "[ROLE_USER]") {
+          const deviceResponse = await axios.get(`http://localhost:8080/devices/user/${username}`);
+          const devices = deviceResponse.data;
+          const ids = devices.map((device) => device.id);
+          setDeviceIds(ids);
+          console.log(ids);
+          // Now fetch the alerts for the user based on the device IDs
+          const alertsResponse = await axios.get("http://localhost:8080/alert/critical");
+          console.log(alertsResponse.data);
+          alerts = alertsResponse.data.filter((alert) => ids.includes(Number(alert.deviceId)));
+
+
+        } else {
+          // If the user is an admin, fetch all alerts
+          const alertsResponse = await axios.get("http://localhost:8080/alert/critical");
+          alerts = alertsResponse.data;
+        }
+
+        setData(alerts); // Set the filtered or all alerts
+        console.log(alerts);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
-    fetchData(); // Fetch data initially
+    
+    fetchData(); // Call the function to fetch data
 
     // Optionally, you can add an interval for periodic fetching:
     const intervalId = setInterval(fetchData, 5000); // Fetch every 5 seconds
 
     return () => clearInterval(intervalId); // Clean up interval on component unmount
-  }, []);
+  }, [username, role]); // Re-fetch data when username or role changes
 
   const table = useReactTable({
     data,

@@ -5,9 +5,11 @@ import com.example.alertsystem.Kafka.dto.DeviceUpdateRequest;
 import com.example.alertsystem.Kafka.entity.Device;
 import com.example.alertsystem.Kafka.entity.User;
 import com.example.alertsystem.Kafka.repository.DeviceRepository;
+import com.example.alertsystem.Kafka.repository.UserRepository;
 import com.example.alertsystem.Kafka.service.DeviceService;
 import com.example.alertsystem.Kafka.service.UserService;
 import org.apache.kafka.common.protocol.types.Field;
+import org.hibernate.engine.transaction.jta.platform.internal.SynchronizationRegistryBasedSynchronizationStrategy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,11 +28,13 @@ public class DeviceController {
     private final DeviceService deviceService;
     private final UserService userService;
     private final DeviceRepository deviceRepository;
+    private final UserRepository userRepository;
 
-    public DeviceController(DeviceService deviceService, UserService userService, DeviceRepository deviceRepository) {
+    public DeviceController(DeviceService deviceService, UserService userService, DeviceRepository deviceRepository, UserRepository userRepository) {
         this.deviceService = deviceService;
         this.userService = userService;
         this.deviceRepository = deviceRepository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/create/{username}/{deviceName}")
@@ -68,7 +72,7 @@ public class DeviceController {
 
 
     @GetMapping("/user/{username}")
-    public ResponseEntity<List<Device>> getUserDevices(@PathVariable String username) {
+    public ResponseEntity<?> getUserDevices(@PathVariable String username) {
         Map<String, String> response = new HashMap<>();
         User user = userService.getUserByUsername(username);
         try{
@@ -125,6 +129,37 @@ public class DeviceController {
         }
     }
 
+    @GetMapping("/username/{deviceName}")
+    public ResponseEntity<Map<String, String>> getUsernameByDeviceName(@PathVariable String deviceName) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            // Find the device by its name
+            Optional<Device> deviceOpt = deviceRepository.findByName(deviceName);
+
+            // Check if the device exists
+            if (deviceOpt.isPresent()) {
+                Device device = deviceOpt.get();
+
+                // Check if the device has a valid userId (optional step depending on your data model)
+                Optional<User> userOpt = userRepository.findById(device.getUserId());
+
+                if (userOpt.isPresent()) {
+                    User user = userOpt.get();
+                    response.put("username", user.getUsername());  // Fetch username from the user entity
+                    return ResponseEntity.ok(response);
+                } else {
+                    response.put("message", "User associated with this device not found");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+                }
+            } else {
+                response.put("message", "Device not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
+            response.put("message", "Error finding username");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 
     @DeleteMapping("/delete/{deviceName}")
     public ResponseEntity<Map<String, String>> deleteDevice( @PathVariable String deviceName) {

@@ -21,14 +21,14 @@ const AddAlarm = () => {
   });
   const [toastMessage, setToastMessage] = useState(""); // Toast message state
   const navigate = useNavigate();
-
+console.log(role);
   // Fetch devices for the dropdown based on user role
   const fetchDevices = async () => {
     try {
       const response = await axios.get(
         role === '[ROLE_ADMIN]' 
           ? 'http://localhost:8080/devices/all' // Admin can access all devices
-          : `http://localhost:8080/devices/${username}` // User can only access their own devices
+          : `http://localhost:8080/devices/user/${username}` // User can only access their own devices
       );
       setDevices(response.data);
     } catch (error) {

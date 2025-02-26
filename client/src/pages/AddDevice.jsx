@@ -251,7 +251,7 @@ const AddDevice = () => {
         </form>
       </div>
 
-      {/* Conditionally render the Toast message at the bottom of the page */}
+      {/* Conditionally render the Toast admin at the bottom of the page */}
       {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage("")} />}
     </>
   );
