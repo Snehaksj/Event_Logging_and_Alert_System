@@ -39,8 +39,6 @@ export default function Alarm() {
           const alertsResponse = await axios.get("http://localhost:8080/alert/critical");
           console.log(alertsResponse.data);
           alerts = alertsResponse.data.filter((alert) => ids.includes(Number(alert.deviceId)));
-
-
         } else {
           // If the user is an admin, fetch all alerts
           const alertsResponse = await axios.get("http://localhost:8080/alert/critical");
@@ -112,13 +110,23 @@ export default function Alarm() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="hover:bg-blue-900">
+                <tr
+                  key={row.id}
+                  // Add the line-through style with inline styling to ensure it's applied correctly
+                  style={{
+                    textDecoration: row.original.resolved === true ? 'line-through' : 'none',
+                    color: row.original.resolved === true ? 'red' : 'inherit', // Change color for resolved rows
+                    textDecorationThickness: '1.5px'
+                  }}
+                  className="hover:bg-blue-900"
+                >
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
                       className="px-4 py-3 whitespace-nowrap text-sm text-gray-300"
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                     
                     </td>
                   ))}
                 </tr>
