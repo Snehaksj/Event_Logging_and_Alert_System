@@ -27,35 +27,134 @@ app.post("/api/events", (req, res) => {
 });
 
 
-// Function to read Excel file and send records one at a time
-async function readExcelAndSendData() {
-  // Path to the Excel file (data.xlsx should be in the same directory as server.js)
-  const filePath = path.join(__dirname, "data.xlsx");
-  const workbook = xlsx.readFile(filePath);
-  // Assuming data is in the first sheet
-  const sheetName = workbook.SheetNames[0];
-  const worksheet = workbook.Sheets[sheetName];
-  const jsonData = xlsx.utils.sheet_to_json(worksheet);
 
-  console.log("Excel data loaded. Total records:", jsonData.length);
-  for (let index = 0; index < jsonData.length; index++) {
-    const record = jsonData[index];
-    try {
-      // Await axios call to ensure it's asynchronous
-      const response = await axios.post(`http://localhost:8080/alert`, record);
-      console.log(`Record ${index+1} sent successfully:`, response.data);
-    } catch (error) {
-      console.error(`Error sending record ${index + 1}:`, error.message);
-    }
-
-    // Wait for 10 seconds before sending the next record
-    if (index < jsonData.length - 1) {
-      await new Promise(resolve => setTimeout(resolve, 5000)); // Delay of 10 seconds
-    }
+// Function to fetch devices from the backend
+async function fetchDevices() {
+  const url = 'http://localhost:8080/devices/all'; // URL to get the devices
+  try {
+    const response = await axios.get(url); // Fetch device data
+    return response.data; // Return the devices array from the response
+  } catch (error) {
+    console.error('Error fetching devices:', error);
+    return []; // Return an empty array in case of error
   }
-
-  console.log("All records have been sent.");
 }
+
+// Severity-specific message pools
+const messagePools = {
+  INFO: [
+    'Device connected successfully', 'System initialized', 'Login attempt successful',
+    'Routine check completed', 'Normal operation', 'Configuration applied successfully'
+  ],
+  CRITICAL: [
+    'System failure', 'Security breach detected', 'Unauthorized access attempt',
+    'Critical error occurred', 'Malware detected', 'Data loss detected'
+  ],
+  MAJOR: [
+    'Device offline', 'High load detected', 'Memory threshold exceeded', 
+    'CPU usage high', 'System resource running low', 'Potential security risk'
+  ],
+  MINOR: [
+    'Warning: Low disk space', 'Device rebooted', 'User login detected',
+    'Minor configuration change', 'User logged out', 'Service restarted'
+  ],
+  WARNING: [
+    'Connection unstable', 'Slow response detected', 'Unexpected behavior observed',
+    'Limited access detected', 'Service response delayed', 'Minor issue detected'
+  ]
+};
+async function generateAndSendData() {
+  let eventIdCounter = 1001; // Start eventId from E1001
+
+  // Continuously generate and send data every 5 seconds
+  setInterval(async () => {
+    const devices = await fetchDevices(); // Fetch devices every 5 seconds
+
+    // If no devices are fetched, exit the function
+    if (devices.length === 0) {
+      console.log('No devices available');
+      return;
+    }
+
+    const eventTypes = [
+      'FAILED_LOGIN', 'DEVICE_ONLINE', 'TRAFFIC_SPIKE', 'DEVICE_OFFLINE',
+      'SECURITY_BREACH', 'SUCCESSFUL_LOGIN'
+    ];
+
+    const severities = ['CRITICAL', 'MAJOR', 'WARNING', 'INFO', 'MINOR'];
+    const severity = severities[Math.floor(Math.random() * severities.length)]; // Random severity
+
+    const eventData = {
+      eventId: `E${eventIdCounter++}`,  // Increment eventId for each event
+      timestamp: new Date().toISOString(),
+      deviceId: devices[Math.floor(Math.random() * devices.length)].id, // Random device id from fetched devices
+      eventType: eventTypes[Math.floor(Math.random() * eventTypes.length)], // Random event type
+      ipAddress: `192.168.1.${Math.floor(Math.random() * 100) + 1}`, // Random IP address
+      severity: severity, // Random severity
+      message: messagePools[severity][Math.floor(Math.random() * messagePools[severity].length)] // Random message from the severity pool
+    };
+
+    // Save critical event in both alert and alarm tables
+    if (severity === 'CRITICAL') {
+      try {
+        // Save to alerts table (existing logic)
+        const responseAlert = await axios.post('http://localhost:8080/alert', eventData);
+        console.log(`Critical event sent to alerts table: ${eventData.eventId}`, responseAlert.data);
+
+        // Find the device by ID
+        const device = devices.find(dev => dev.id === eventData.deviceId); // Find the device by ID
+        if (device) {
+          // Fetch username by device name
+          const deviceName = device.name; // Assuming device has a `name` field
+          const response = await axios.get(`http://localhost:8080/devices/username/${deviceName}`);
+          
+          if (response.status === 200) {
+            const username = response.data.username;  // Extract username from the response
+            console.log(username)
+            // Prepare the alarm data
+            const alarmData = {
+              deviceId: device.id,
+              criticality: eventData.severity,
+              message: eventData.message,
+              severity: eventData.severity
+            };
+
+
+            // Send the critical event to the `createAlarm` route dynamically
+            await axios.post(`http://localhost:8080/alarms/create/${username}/${deviceName}`, alarmData);
+            console.log(`Critical event sent to alarms table: ${eventData.eventId}`);
+          } else {
+            console.error('Error fetching username for device:', deviceName);
+          }
+        }
+      } catch (error) {
+        console.error(`Error saving critical event (ID: ${eventData.eventId}):`, error.message);
+      }
+    } else {
+      // For non-critical events, save only to alerts table
+      try {
+        const response = await axios.post('http://localhost:8080/alert', eventData);
+        console.log(`Event sent to alerts table: ${eventData.eventId}`, response.data);
+      } catch (error) {
+        console.error(`Error sending event ${eventData.eventId} to alerts:`, error.message);
+      }
+    }
+
+  }, 5000); // Generate and send event every 5 seconds
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Endpoint to send real-time data to clients
 app.get("/api/live-data", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
@@ -125,7 +224,9 @@ function sendTrafficData() {
 // Start sending data when the server starts
 sendLiveData();
 sendTrafficData();
-readExcelAndSendData();
+
+// Call the function to start generating and sending data
+generateAndSendData();
 app.listen(PORT, () => {
   console.log(`Dummy server running on port ${PORT}`);
 });

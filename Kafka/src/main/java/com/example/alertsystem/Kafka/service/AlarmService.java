@@ -29,7 +29,7 @@ public class AlarmService {
         alarm.setCriticality(criticality);
         alarm.setMessage(message);
         alarm.setResolved(false);
-
+        alarm.setDevice(device);
         alarm.setTimestamp(LocalDateTime.now());
 
 
@@ -42,9 +42,13 @@ public class AlarmService {
     public List<Alarm> getAlarmsByDevice(Long deviceId) {
         return alarmRepository.findByDevice_Id(deviceId); // ✅ Fetch alarms by device ID
     }
+    public List<Alarm> getAlarmssByDevice(List<Long> deviceIds) {
+        return alarmRepository.findByDevice_IdIn(deviceIds); // ✅ Fetch alarms by device IDs using 'IN' query
+    }
 
-    public Alarm resolveAlarm(String message) {
-        Optional<Alarm> optionalAlarm = alarmRepository.findByMessage(message);
+
+    public Alarm resolveAlarm(Long alarmId) {
+        Optional<Alarm> optionalAlarm = alarmRepository.findById(alarmId);
         if (optionalAlarm.isPresent()) {
             Alarm alarm = optionalAlarm.get();
             if (!alarm.getResolved()) {

@@ -12,22 +12,18 @@ const Alarms = () => {
     navigate(`/alarms/${page}`); // Redirect to the respective page
   };
 
-<<<<<<< HEAD
   const handleBack = () =>{
     navigate('/dashboard');
   };
   
+
   return (
     <>
       <Nav />
       <p className='m-10 text-white cursor-pointer hover:text-gray-300 w-48' onClick={handleBack}> &lt; Back to dashboard</p>
       <div className="m-28 flex flex-col gap-14">
-=======
-  return (
-    <>
-      <Nav />
-      <div className="m-36 flex flex-col gap-14">
->>>>>>> 0d4a203 (Alarm page done)
+
+
         <div className="flex gap-10 justify-center items-center">
           {/* Card 1: Create Alarm */}
           <div
@@ -47,9 +43,6 @@ const Alarms = () => {
             <p className="text-white text-lg">View Alarms</p>
           </div>
 
-<<<<<<< HEAD
-          
-=======
           {/* Conditionally render this card for Admin only */}
           {role === '[ROLE_ADMIN]' && (
             <div
@@ -60,15 +53,11 @@ const Alarms = () => {
               <p className="text-white text-lg">Resolve Alarms</p>
             </div>
           )}
->>>>>>> 0d4a203 (Alarm page done)
+
         </div>
       </div>
     </>
   );
 };
 
-<<<<<<< HEAD
 export default Alarms;
-=======
-export default Alarms;
->>>>>>> 0d4a203 (Alarm page done)
