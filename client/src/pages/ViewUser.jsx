@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import axios from "axios"; // Import axios
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
-  getFilteredRowModel,  // Ensure we use the correct filtered row model
+  getFilteredRowModel, // Ensure we use the correct filtered row model
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown, Search } from "lucide-react";
@@ -18,17 +20,17 @@ const columns = [
   columnHelper.accessor("id", {
     header: () => <span className="flex items-center">User ID</span>,
     cell: (info) => info.getValue(),
-    filterFn: 'includes', // Make column filterable
+    filterFn: "includes", // Make column filterable
   }),
   columnHelper.accessor("username", {
     header: () => <span className="flex items-center">Username</span>,
     cell: (info) => info.getValue(),
-    filterFn: 'includes', // Make column filterable
+    filterFn: "includes", // Make column filterable
   }),
   columnHelper.accessor("role", {
     header: () => <span className="flex items-center">Role</span>,
     cell: (info) => info.getValue(),
-    filterFn: 'includes', // Make column filterable
+    filterFn: "includes", // Make column filterable
   }),
 ];
 
@@ -52,8 +54,8 @@ export default function ViewUser() {
       }
     };
 
-    fetchData();  // Fetch data initially
-  }, []);  // Empty dependency array to only fetch once when the component is mounted
+    fetchData(); // Fetch data initially
+  }, []); // Empty dependency array to only fetch once when the component is mounted
 
   const table = useReactTable({
     data,
@@ -71,12 +73,34 @@ export default function ViewUser() {
   });
   const navigate = useNavigate();
   const handleBack = () => {
-    navigate('/users'); // Navigate back to the /users page
+    navigate("/users"); // Navigate back to the /users page
   };
+
+  const handleDownload = () => {
+    // Extract only id, username, and role
+    const filteredData = data.map(({ id, username, role }) => ({
+      ID: id,
+      Username: username,
+      Role: role,
+    }));
+    const ws = XLSX.utils.json_to_sheet(filteredData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Users");
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "users.xlsx");
+  };
+
   return (
     <>
-      <Nav/>
-      <p className='m-10 text-white cursor-pointer hover:text-gray-300 w-28' onClick={handleBack}> &larr; Back to users</p>
+      <Nav />
+      <p
+        className="m-10 text-white cursor-pointer hover:text-gray-300 w-28"
+        onClick={handleBack}
+      >
+        {" "}
+        &larr; Back to users
+      </p>
       <div className="flex flex-col w-11/12 max-h-[500px] mt-4 mx-auto p-3 bg-slate-900 text-gray-300 rounded-lg">
         {/* Dark-themed search bar */}
         <div className="mb-4 relative">
@@ -130,7 +154,10 @@ export default function ViewUser() {
                       key={cell.id}
                       className="px-2 py-3 whitespace-nowrap text-sm text-gray-300"
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -138,6 +165,16 @@ export default function ViewUser() {
             </tbody>
           </table>
         </div>
+      </div>
+      <div className="flex justify-end mt-4 mr-14">
+        <button
+          onClick={handleDownload}
+          class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+        >
+          <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+            Download
+          </span>
+        </button>
       </div>
     </>
   );
