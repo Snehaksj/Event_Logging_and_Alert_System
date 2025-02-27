@@ -1,3 +1,5 @@
+
+
 package com.example.alertsystem.Kafka.service;
 
 import jakarta.mail.MessagingException;
@@ -20,14 +22,12 @@ public class EmailService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // Team emails for different criticality levels
-    public static final String CRITICAL_TEAM_EMAIL = "oncall-team@example.com";
-    public static final String HIGH_TEAM_EMAIL = "network-team@example.com";
-    public static final String MEDIUM_TEAM_EMAIL = "operations@example.com";
-    public static final String LOW_TEAM_EMAIL = "monitoring@example.com";
-
+    /**
+     * Sends an email with the given recipient, subject, and body content.
+     */
     public void sendEmail(String to, String subject, String body) {
         try {
+            System.out.println("📤 Sending email to: " + to);
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
@@ -37,42 +37,45 @@ public class EmailService {
             System.out.println("✅ Email sent successfully to: " + to);
         } catch (MessagingException e) {
             e.printStackTrace();
-            System.err.println("❌ Error sending email: " + e.getMessage());
+            System.err.println("❌ Email sending failed: " + e.getMessage());
         }
     }
 
+    /**
+     * Processes pending alarms from the `notification_queue`.
+     */
     @Scheduled(fixedRate = 60000) // Runs every 1 minute
     public void processPendingAlarms() {
+        System.out.println("🔄 Checking `notification_queue` for pending alarms...");
+
         String query = "SELECT * FROM notification_queue WHERE sent = FALSE";
         List<Map<String, Object>> pendingAlerts = jdbcTemplate.queryForList(query);
 
         if (pendingAlerts.isEmpty()) {
-            System.out.println("🔍 No pending alarms to process.");
+            System.out.println("✅ No pending alarms.");
             return;
         }
 
         for (Map<String, Object> alert : pendingAlerts) {
-            Long alarmId = (Long) alert.get("alarm_id");
+            Long alarmId = ((Number) alert.get("alarm_id")).longValue();
             String criticality = (String) alert.get("criticality");
             String message = (String) alert.get("message");
-            String email = (String) alert.get("email");
+            String userEmail = (String) alert.get("email");
             String type = (String) alert.get("type");
 
-            System.out.println("⚠️ Processing Alarm ID: " + alarmId + " | Type: " + type);
+            System.out.println("⚠️ Processing Alarm ID: " + alarmId);
 
             if ("resolved_ack".equals(type)) {
-                // Send acknowledgment to user
                 String emailBody = "<h3>✅ Alarm Resolved</h3>"
                         + "<p>Your reported issue has been resolved.</p>"
                         + "<p><b>Alarm ID:</b> " + alarmId + "</p>"
                         + "<p><b>Message:</b> " + message + "</p>";
 
-                sendEmail(email, "✅ Alarm Resolved - ID: " + alarmId, emailBody);
+                sendEmail(userEmail, "✅ Alarm Resolved - ID: " + alarmId, emailBody);
             } else {
-                // Send alarm notification to respective team
                 String recipientEmail = getRecipientEmail(criticality);
                 if (recipientEmail == null) {
-                    System.out.println("⚠️ Unknown criticality: " + criticality + " | No email sent.");
+                    System.out.println("⚠️ Unknown criticality: " + criticality + " | Skipping...");
                     continue;
                 }
 
@@ -85,21 +88,66 @@ public class EmailService {
                 sendEmail(recipientEmail, emoji + " Alarm Notification - " + criticality, emailBody);
             }
 
-            // Mark as sent
-            jdbcTemplate.update("UPDATE notification_queue SET sent = TRUE WHERE id = ?", alert.get("id"));
+            int rowsUpdated = jdbcTemplate.update("UPDATE notification_queue SET sent = TRUE WHERE id = ?", alert.get("id"));
+            System.out.println("🔄 Updated " + rowsUpdated + " row(s) in `notification_queue`.");
         }
     }
 
+    /**
+     * Processes resolved alarms from `resolved_alarms` table.
+     */
+    @Scheduled(fixedRate = 60000) // Runs every 1 minute
+    public void processResolvedAlarms() {
+        System.out.println("🔄 Checking `resolved_alarms` for pending notifications...");
+
+        String query = "SELECT id, alarm_id, message, user_email FROM resolved_alarms WHERE sent = FALSE";
+        List<Map<String, Object>> resolvedAlarms = jdbcTemplate.queryForList(query);
+
+        if (resolvedAlarms.isEmpty()) {
+            System.out.println("✅ No pending resolved alarms.");
+            return;
+        }
+
+        for (Map<String, Object> alarm : resolvedAlarms) {
+            Long alarmId = ((Number) alarm.get("alarm_id")).longValue();
+            String message = (String) alarm.get("message");
+            String userEmail = (String) alarm.get("user_email");
+
+            if (userEmail == null || userEmail.isEmpty()) {
+                System.out.println("❌ No email found for this alarm. Skipping...");
+                continue;
+            }
+
+            System.out.println("📧 Sending resolution email to: " + userEmail);
+
+            String emailBody = "<h3>✅ Alarm Resolved</h3>"
+                    + "<p>Your reported issue has been resolved.</p>"
+                    + "<p><b>Alarm ID:</b> " + alarmId + "</p>"
+                    + "<p><b>Message:</b> " + message + "</p>";
+
+            sendEmail(userEmail, "✅ Alarm Resolved - ID: " + alarmId, emailBody);
+
+            int rowsUpdated = jdbcTemplate.update("UPDATE resolved_alarms SET sent = TRUE WHERE id = ?", alarm.get("id"));
+            System.out.println("🔄 Updated " + rowsUpdated + " row(s) in `resolved_alarms`.");
+        }
+    }
+
+    /**
+     * Determines recipient email based on alarm criticality.
+     */
     private String getRecipientEmail(String criticality) {
         switch (criticality.toLowerCase()) {
-            case "critical": return CRITICAL_TEAM_EMAIL;
-            case "high": return HIGH_TEAM_EMAIL;
-            case "medium": return MEDIUM_TEAM_EMAIL;
-            case "low": return LOW_TEAM_EMAIL;
+            case "critical": return "oncall-team@example.com";
+            case "high": return "network-team@example.com";
+            case "medium": return "operations@example.com";
+            case "low": return "monitoring@example.com";
             default: return null;
         }
     }
 
+    /**
+     * Returns an emoji representation of alarm criticality.
+     */
     private String getCriticalityEmoji(String criticality) {
         switch (criticality.toLowerCase()) {
             case "critical": return "🚨";
