@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
 import { useAuth } from "../Context/authContext";
 import axios from "axios";
 import {
@@ -139,9 +143,32 @@ export default function ViewUser() {
     },
   });
 
-  // Navigate to the dashboard
   const handleBack = () => {
     navigate("/alarms");
+  };
+
+
+  const handleDownload = () => {
+    if (!data || data.length === 0) {
+      alert("No data available for download");
+      return;
+    }
+  
+    
+    const formattedData = data.map((item) => ({
+      "Device Name": item.device.name, 
+      "Assigned User": item.device.user.username, 
+      "Criticality": item.criticality, 
+      "Message": item.message, 
+      "Timestamp": item.timestamp, 
+      "Resolved": item.resolved ? "Yes" : "No", 
+    }));
+  
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Alarms");
+  
+    XLSX.writeFile(workbook, "alarms.xlsx");
   };
 
   return (
@@ -219,6 +246,17 @@ export default function ViewUser() {
           </div>
         )}
       </div>
+      <div className="flex justify-end mt-4 mr-14">
+          <button
+            onClick={handleDownload}
+            class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+          >
+            <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+              Download
+            </span>
+          </button>
+        </div>
+
     </>
   );
 
