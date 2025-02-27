@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
+
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
 import { useAuth } from "../Context/authContext";
+
 import axios from "axios";
 import {
   createColumnHelper,
@@ -117,6 +122,33 @@ export default function ViewDevice() {
     navigate("/devices");
   };
 
+  const handleDownload = () => {
+  
+    
+
+    const filteredData = data.map(({ id, name, user, configuration }) => ({
+      "Device ID": id,
+      "Device Name": name,
+      "Assigned User": user.username,
+      "IP Address": configuration[0] || "N/A",
+      "RAM": configuration[1] || "N/A",
+      "MAC Address": configuration[2] || "N/A",
+      "Software Version": configuration[3] || "N/A",
+      "SDH": configuration[4] || "N/A",
+    }));
+  
+   
+    const ws = XLSX.utils.json_to_sheet(filteredData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Devices");
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+  
+   
+    saveAs(blob, "devices.xlsx");
+  };
+  
+
   return (
     <>
       <Nav />
@@ -177,6 +209,16 @@ export default function ViewDevice() {
           </table>
         </div>
       </div>
+        <div className="flex justify-end mt-4 mr-14">
+          <button
+            onClick={handleDownload}
+            class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+          >
+            <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+              Download
+            </span>
+          </button>
+        </div>
     </>
   );
 }
