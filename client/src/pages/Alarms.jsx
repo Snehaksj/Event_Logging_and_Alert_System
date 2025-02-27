@@ -43,16 +43,7 @@ const Alarms = () => {
             <p className="text-white text-lg">View Alarms</p>
           </div>
 
-          {/* Conditionally render this card for Admin only */}
-          {role === '[ROLE_ADMIN]' && (
-            <div
-              className="h-[200px] w-[300px] rounded-xl bg-slate-900 flex flex-col items-center justify-center hover:scale-105 hover:bg-slate-700 transition-all duration-300 shadow-lg cursor-pointer"
-              onClick={() => handleCardClick('resolve')}
-            >
-              <img src="/resolve.svg" alt="Resolve Alarms" className="h-[100px] w-[120px] mb-4" />
-              <p className="text-white text-lg">Resolve Alarms</p>
-            </div>
-          )}
+        
 
         </div>
       </div>
