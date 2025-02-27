@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 
+
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+
 
 import { useAuth } from "../Context/authContext";
 import axios from "axios";
@@ -143,6 +145,7 @@ export default function ViewUser() {
     },
   });
 
+
   const handleBack = () => {
     navigate("/alarms");
   };
@@ -170,6 +173,7 @@ export default function ViewUser() {
   
     XLSX.writeFile(workbook, "alarms.xlsx");
   };
+
 
   return (
     <>
@@ -246,6 +250,7 @@ export default function ViewUser() {
           </div>
         )}
       </div>
+
       <div className="flex justify-end mt-4 mr-14">
           <button
             onClick={handleDownload}

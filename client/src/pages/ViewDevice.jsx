@@ -3,6 +3,9 @@ import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
 import { useAuth } from "../Context/authContext";
 
 import axios from "axios";
