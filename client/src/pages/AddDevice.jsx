@@ -6,7 +6,7 @@ import Toast from '../Components/Toast.jsx'; // Import the Toast component
 import { useAuth } from '../Context/authContext.jsx'; // Assuming you have an AuthContext
 
 const AddDevice = () => {
-  const { username } = useAuth(); // Get the username from authContext
+  const { username, role } = useAuth(); // Get the username and role from authContext
   const [deviceName, setDeviceName] = useState("");
   const [ipAddress, setIpAddress] = useState("");
   const [ram, setRam] = useState("");
@@ -14,6 +14,7 @@ const AddDevice = () => {
   const [softwareVersion, setSoftwareVersion] = useState("");
   const [transport, setTransport] = useState("");
   const [inputUsername, setInputUsername] = useState(""); // State for the username input (only visible if admin)
+  const [users, setUsers] = useState([]); // List of users for the dropdown
   const [errorMessages, setErrorMessages] = useState({
     deviceNameMsg: "",
     ipAddressMsg: "",
@@ -25,6 +26,22 @@ const AddDevice = () => {
   });
   const [toastMessage, setToastMessage] = useState(""); // Toast message state
   const navigate = useNavigate();
+
+  // Fetch users for the dropdown when the component loads
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/users');
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    if (role === '[ROLE_ADMIN]') {
+      fetchUsers();
+    }
+  }, [role]);
 
   // IP and MAC address validation functions
   const validateIpAddress = (ip) => {
@@ -99,7 +116,7 @@ const AddDevice = () => {
     }
 
     // Use admin input for username if username is "admin", otherwise use the authContext username
-    const apiUsername = username === "admin" ? inputUsername : username;
+    const apiUsername = role === "[ROLE_ADMIN]" ? inputUsername : username;
 
     try {
       // Make an API request to register the device using axios
@@ -187,15 +204,23 @@ const AddDevice = () => {
           {errorMessages.softwareVersionMsg && <p className="text-red-500">{errorMessages.softwareVersionMsg}</p>}
 
           {/* Conditionally render the username input field if the user is admin */}
-          {username === "admin" && (
+          {role === "[ROLE_ADMIN]" && (
             <label className="text-slate-100">
               Username
-              <input
-                type="text"
+              <select
                 className="mt-1 p-1 border border-slate-400 bg-black opacity-55 rounded-md w-full"
                 value={inputUsername}
                 onChange={(e) => setInputUsername(e.target.value)}
-              />
+              >
+                <option value="">Select Username</option>
+                {users
+                  .filter((user) => user.role === "USER") // Filter only users with role 'USER'
+                  .map((user) => (
+                    <option key={user.username} value={user.username}>
+                      {user.username}
+                    </option>
+                  ))}
+              </select>
             </label>
           )}
 
