@@ -10,10 +10,14 @@ const Devices = () => {
     navigate(`/devices/${page}`); // Redirect to the respective page
   };
 
+  const handleBack = () =>{
+    navigate('/dashboard');
+  };
   return (
     <>
       <Nav />
-      <div className="m-20 flex flex-col gap-14">
+      <p className='m-10 text-white cursor-pointer hover:text-gray-300 w-48' onClick={handleBack}> &lt; Back to dashboard</p>
+      <div className="m-19 flex flex-col gap-14">
         <div className="flex gap-10 justify-center items-center">
           {/* Card 1: Add Device */}
           <div
@@ -44,7 +48,6 @@ const Devices = () => {
         </div>
 
         <div className="flex gap-10 justify-center items-center">
-          
           {/* Card 4: Delete Device */}
           <div
             className="h-[200px] w-[300px] rounded-xl bg-slate-900 flex flex-col items-center justify-center hover:scale-105 hover:bg-slate-700 transition-all duration-300 shadow-lg cursor-pointer"

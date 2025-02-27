@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
+
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+
+import { useAuth } from "../Context/authContext";
+
 import axios from "axios";
 import {
   createColumnHelper,
@@ -22,49 +26,30 @@ export default function ViewDevice() {
   const [globalFilter, setGlobalFilter] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(5);
-
-  const [ipAddressData, setIpAddressData] = useState([]);
-  const [ramData, setRamData] = useState([]);
-  const [macAddressData, setMacAddressData] = useState([]);
-  const [softwareVersionData, setSoftwareVersionData] = useState([]);
-  const [sdhData, setSdhData] = useState([]);
+  const { username, role } = useAuth(); // Get the role from the auth context
+  const navigate = useNavigate();
 
   // Fetch device data once when the component is mounted
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/devices/all");
-        const devices = response.data;
+        const url =
+          role === "[ROLE_ADMIN]"
+            ? "http://localhost:8080/devices/all"  // Admin sees all devices
+            : `http://localhost:8080/devices/user/${username}`;  // Users see their assigned devices
 
-        // Set general device data
-        setData(devices);
-
-        // Traverse and extract each part of the configuration
-        const ipAddresses = devices.map((device) => device.configuration[0]);
-        setIpAddressData(ipAddresses);
-
-        const ramValues = devices.map((device) => device.configuration[1]);
-        setRamData(ramValues);
-
-        const macAddresses = devices.map((device) => device.configuration[2]);
-        setMacAddressData(macAddresses);
-
-        const softwareVersions = devices.map((device) => device.configuration[3]);
-        setSoftwareVersionData(softwareVersions);
-
-        const sdhs = devices.map((device) => device.configuration[4]);
-        setSdhData(sdhs);
-
-        console.log(devices); // Log the fetched data for debugging
+        const response = await axios.get(url);
+        console.log("API Response:", response);
+        setData(response.data); // Set devices data
       } catch (error) {
         console.error("Error fetching device data:", error);
       }
     };
 
-    fetchData();  // Fetch data initially
-  }, []);  // Empty dependency array to only fetch once when the component is mounted
+    fetchData(); // Fetch data initially
+  }, [username, role]); // Dependency on username and role to re-fetch if either changes
 
-  // Dynamically create columns
+  // Dynamically create columns for device data
   const columns = [
     columnHelper.accessor("id", {
       header: () => <span className="flex items-center">Device ID</span>,
@@ -86,38 +71,40 @@ export default function ViewDevice() {
       id: "ipAddress", // Add a unique id for this column
       header: () => <span className="flex items-center">IP Address</span>,
       cell: (info) => info.getValue(),
-      filterFn: "includes",
+      filterFn: "includes", // Make column filterable
     }),
     columnHelper.accessor((row) => row.configuration[1], {
       id: "ram", // Add a unique id for this column
       header: () => <span className="flex items-center">RAM</span>,
       cell: (info) => info.getValue(),
-      filterFn: "includes",
+      filterFn: "includes", // Make column filterable
     }),
     columnHelper.accessor((row) => row.configuration[2], {
       id: "macAddress", // Add a unique id for this column
       header: () => <span className="flex items-center">MAC Address</span>,
       cell: (info) => info.getValue(),
-      filterFn: "includes",
+      filterFn: "includes", // Make column filterable
     }),
     columnHelper.accessor((row) => row.configuration[3], {
       id: "softwareVersion", // Add a unique id for this column
       header: () => <span className="flex items-center">Software Version</span>,
       cell: (info) => info.getValue(),
-      filterFn: "includes",
+      filterFn: "includes", // Make column filterable
     }),
     columnHelper.accessor((row) => row.configuration[4], {
       id: "sdh", // Add a unique id for this column
       header: () => <span className="flex items-center">SDH</span>,
       cell: (info) => info.getValue(),
-      filterFn: "includes",
+      filterFn: "includes", // Make column filterable
     }),
   ];
-  
-  
+
+  // Reorder columns (optional: to put some column first or last)
+  const reorderedColumns = [...columns];
+
   const table = useReactTable({
     data,
-    columns,
+    columns: reorderedColumns,
     state: { sorting, globalFilter, pagination: { pageIndex, pageSize } },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -130,7 +117,7 @@ export default function ViewDevice() {
     },
   });
 
-  const navigate = useNavigate();
+  // Navigate back to the devices page
   const handleBack = () => {
     navigate("/devices");
   };
@@ -201,15 +188,23 @@ export default function ViewDevice() {
               ))}
             </thead>
             <tbody className="divide-y divide-gray-700">
-              {table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="hover:bg-gray-600">
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-2 py-3 whitespace-nowrap text-sm text-gray-300">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
+              {table.getRowModel().rows.length === 0 ? (
+                <tr>
+                  <td colSpan="8" className="text-center text-gray-400">
+                    No devices available.
+                  </td>
                 </tr>
-              ))}
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <tr key={row.id} className="hover:bg-gray-600">
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id} className="px-2 py-3 whitespace-nowrap text-sm text-gray-300">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

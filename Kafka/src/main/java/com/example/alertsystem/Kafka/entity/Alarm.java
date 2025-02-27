@@ -15,7 +15,6 @@ public class Alarm {
     private Device device;
 
     private String criticality;
-    @Column(unique = true, nullable = false)
     private String message;
     private boolean resolved;
     private LocalDateTime timestamp;
@@ -61,7 +60,7 @@ public class Alarm {
         this.message = message;
     }
 
-    public boolean isResolved() {
+    public boolean getResolved() {
         return resolved;
     }
 
@@ -75,5 +74,9 @@ public class Alarm {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Long getDeviceId(){
+        return this.device.getId();
     }
 }

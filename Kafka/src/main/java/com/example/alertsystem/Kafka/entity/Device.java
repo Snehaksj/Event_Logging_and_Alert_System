@@ -52,5 +52,7 @@ public class Device {
         this.configuration = configuration;
     }
 
+    public Long getUserId(){return this.user.getId();}
+
 
 }

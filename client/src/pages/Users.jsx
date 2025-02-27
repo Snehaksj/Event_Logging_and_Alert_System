@@ -39,6 +39,7 @@ const Users = () => {
             <img src="/users.svg" alt="Add Multiple Users" className="h-[100px] w-[120px] mb-4" />
             <p className="text-white text-lg">Add Multiple Users</p>
           </div>
+
           {/* Card 3: Edit Device */}
           <div
             className="h-[200px] w-[300px] rounded-xl bg-slate-900 flex flex-col items-center justify-center hover:scale-105 hover:bg-slate-700 transition-all duration-300 shadow-lg cursor-pointer"
@@ -47,7 +48,6 @@ const Users = () => {
             <img src="/edit.svg" alt="Edit User" className="h-[100px] w-[120px] mb-4" />
             <p className="text-white text-lg">Edit User</p>
           </div>
-         
         </div>
 
         <div className="flex gap-10 justify-center items-center">
